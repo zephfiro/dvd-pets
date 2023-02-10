@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Meu Jogo Clicker de Pets</title>
+  </head>
+  <body>
+    <h1>Meu Jogo Clicker de Pets</h1>
+    <p>Clique na árvore para regá-la</p>
+    <div id="tree"></div>
+    <p>Você regou a árvore <span id="count">0</span> vezes</p>
+    <div id="pets"></div>
+    <script>
+      // seleciona a árvore
+      const tree = document.querySelector("#tree");
+
+      // seleciona o contador de regadas
+      const count = document.querySelector("#count");
+
+      // seleciona a div de pets
+      const pets = document.querySelector("#pets");
+
+      // inicia o contador de regadas como 0
+      let regadas = 0;
+
+      // adiciona um evento de clique na árvore
+      tree.addEventListener("click", function() {
+        regadas++;
+        count.innerHTML = regadas;
+
+        // verifica se a árvore foi regada 15 vezes
+        if (regadas === 15) {
+          // cria um novo pet e adiciona na tela
+          const pet = document.createElement("div");
+          pet.classList.add("pet");
+          pets.appendChild(pet);
+
+          // anima o pet através da tela
+          let pos = 0;
+          const id = setInterval(frame, 10);
+          function frame() {
+            if (pos === 350) {
+              clearInterval(id);
+            } else {
+              pos++;
+              pet.style.left = pos + "px";
+              pet.style.top = Math.sin(pos / 10) * 10 + "px";
+            }
+          }
+        }
+      });
+    </script>
+    <style>
+      #tree {
+        width: 50px;
+        height: 80px;
+        background-color: green;
+        position: relative;
+      }
+      .pet {
+        width: 50px;
+        height: 50px;
+        background-color: brown;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+    </style>
+  </body>
+</html>
