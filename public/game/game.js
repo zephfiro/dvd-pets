@@ -1,3 +1,4 @@
+import Bananamster from './pets/bananamster'
 import Breadoggo from './pets/breadoggo'
 import Catomato from './pets/catomato'
 import Dripturtle from './pets/dripturtle'
@@ -7,7 +8,8 @@ const PETS = {
     scarry_dog: ScarryDog,
     catomato: Catomato,
     breadoggo: Breadoggo,
-    dripturtle: Dripturtle
+    dripturtle: Dripturtle,
+    bananamster: Bananamster
 }
 
 export const Game = (container, { dispatchScore } = {}) => {
