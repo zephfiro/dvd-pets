@@ -1,7 +1,13 @@
+import Breadoggo from './pets/breadoggo'
+import Catomato from './pets/catomato'
+import Dripturtle from './pets/dripturtle'
 import ScarryDog from './pets/scarry_dog'
 
 const PETS = {
-    scarry_dog: ScarryDog
+    scarry_dog: ScarryDog,
+    catomato: Catomato,
+    breadoggo: Breadoggo,
+    dripturtle: Dripturtle
 }
 
 export const Game = (container, { dispatchScore } = {}) => {
@@ -57,13 +63,7 @@ export const Game = (container, { dispatchScore } = {}) => {
     }
 
     const updatePetsPosition = () => {
-        state.pets.forEach((pet) => {
-            const { width, height } = state
-            const { width: petWidth, height: petHeight } = pet.state
-
-            pet.state.position.x = Math.min(Math.max(pet.state.position.x, 0), width - petWidth)
-            pet.state.position.y = Math.min(Math.max(pet.state.position.y, 0), height - petHeight)
-        })
+        state.pets.forEach((pet) => pet.setPosition(getRandomPosition()))
     }
 
     const addPet = (type) => {
@@ -72,8 +72,6 @@ export const Game = (container, { dispatchScore } = {}) => {
         if (!Pet) return
 
         const pet = new Pet({ gameInstance: state, position: getRandomPosition() })
-
-        pet.render()
 
         state.pets.push(pet)
     }

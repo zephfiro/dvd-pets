@@ -6,7 +6,7 @@ export default class ScarryDog extends Pet {
             ...params,
             name: 'Cachorrinho fia da puta',
             type: 'scarry_dog',
-            spritePath: './public/sprites/scarry_dog.webp'
+            spritePath: './sprites/scarry_dog.webp'
         })
     }
 }
