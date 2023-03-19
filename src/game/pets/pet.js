@@ -7,7 +7,7 @@ export default class Pet {
     static DEFAULT_SPEED_Y = -3
     static DEFAULT_SCORE_INCREMENT = 1
     static BONUS_MULTIPLIER = 10
-    static BASE_SPRITE_PATH = './public/sprites'
+    static BASE_SPRITE_PATH = '/src/sprites'
     static randomSing = () => (Math.random() < 0.5 ? -1 : 1)
     static randomColor = () => ({ r: Math.random(), g: Math.random(), b: Math.random() })
     static randomIntNumber = (min, max) => Math.floor(Math.random() * max) + min
