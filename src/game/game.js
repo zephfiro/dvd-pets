@@ -13,44 +13,54 @@ const PETS = {
     bananamster: Bananamster
 }
 
-export const Game = (container, { dispatchScore } = {}) => {
+export const Game = (container) => {
     const state = {
         pets: [],
         score: 0,
-        width: 0,
-        height: 0,
-        backgroundColor: '#000000',
-        canvas: null,
         container: null,
-        canvasContainer: null,
-        ctx: null
+        canvasState: {
+            width: 0,
+            height: 0,
+            canvas: null,
+            container: null,
+            ctx: null,
+            backgroundColor: '#000000'
+        }
     }
 
     const setState = (newState) => {
         Object.assign(state, newState)
     }
 
-    const setContainer = () => {
-        setState({
+    const setCanvasContainer = () => {
+        const container = document.getElementById('canvas')
+
+        setCanvasState({
             container,
-            width: state.canvasContainer.offsetWidth,
-            height: state.canvasContainer.offsetHeight
+            width: container.offsetWidth,
+            height: container.offsetHeight
         })
+    }
+
+    const setCanvasState = (newState) => {
+        Object.assign(state.canvasState, newState)
     }
 
     const createCanvas = () => {
         const canvas = document.createElement('canvas')
-        const ctx = canvas.getContext('2d')
+        const ctx = canvas.getContext('2d', { willReadFrequently: true })
 
-        state.canvasContainer.appendChild(canvas)
+        state.canvasState.container.appendChild(canvas)
 
-        setState({ canvas, ctx })
+        setCanvasState({ canvas, ctx })
         updateCanvasSize()
     }
 
     const renderGame = () => {
-        state.ctx.fillStyle = state.backgroundColor
-        state.ctx.fillRect(0, 0, state.width, state.height)
+        const { ctx, width, height, backgroundColor } = state.canvasState
+
+        ctx.fillStyle = backgroundColor
+        ctx.fillRect(0, 0, width, height)
 
         state.pets.forEach((pet) => pet.move())
 
@@ -58,16 +68,18 @@ export const Game = (container, { dispatchScore } = {}) => {
     }
 
     const updateCanvasSize = () => {
-        state.canvas.width = state.width
-        state.canvas.height = state.height
+        const { canvas, width, height } = state.canvasState
+
+        canvas.width = width
+        canvas.height = height
     }
 
     const addResize = () => {
         new ResizeObserver(() => {
-            setContainer()
+            setCanvasContainer()
             updateCanvasSize()
             updatePetsPosition()
-        }).observe(state.canvasContainer)
+        }).observe(state.canvasState.container)
     }
 
     const getUniqueRandomPosition = () => {
@@ -88,21 +100,29 @@ export const Game = (container, { dispatchScore } = {}) => {
 
         if (!Pet) return
 
-        const pet = new Pet({ gameInstance: state, position: getRandomPosition() })
+        const pet = new Pet({ gameInstance: state, position: getUniqueRandomPosition() })
 
         state.pets.push(pet)
     }
 
     const getRandomPosition = () => {
-        const x = Math.random() * state.width
-        const y = Math.random() * state.height
+        const { width, height } = state.canvasState
+
+        const x = Math.random() * width
+        const y = Math.random() * height
 
         return { x, y }
     }
 
     const incrementScore = (score, type, dispatcher) => {
         state.score += score
-        dispatchScore?.({ gameScore: state.score, type, dispatcher, incrementedScore: score })
+        dispatchScore({ type, dispatcher, incrementedScore: score })
+    }
+
+    const dispatchScore = ({ type, dispatcher, incrementedScore }) => {
+        const scoreElement = document.getElementById('points')
+
+        scoreElement.innerHTML = state.score
     }
 
     const getPets = () => state.pets
@@ -115,15 +135,17 @@ export const Game = (container, { dispatchScore } = {}) => {
         state.findPet = findPet
     }
 
+    const setGameLayout = () => {
+        state.container.innerHTML = GameLayout()
+    }
+
     const init = () => {
-        container.innerHTML = GameLayout()
-
-        state.canvasContainer = document.getElementById('canvas')
-
-        setContainer()
+        setState({ container })
+        setGameLayout()
+        setCanvasContainer()
         createCanvas()
-        addResize()
         setInstance()
+        addResize()
 
         requestAnimationFrame(renderGame)
     }

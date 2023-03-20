@@ -14,6 +14,7 @@ export default class Pet {
 
     constructor({ gameInstance, ...stateParams }) {
         this.gameInstance = gameInstance
+        this.gameCanvasInstance = gameInstance.canvasState
         this.setInitialState(stateParams)
     }
 
@@ -21,6 +22,7 @@ export default class Pet {
     canvas = null
     collisionCount = 0
     gameInstance = null
+    gameCanvasInstance = null
     maxChangeColor = Pet.randomIntNumber(1, 20)
     bitmapImg = null
 
@@ -112,7 +114,7 @@ export default class Pet {
 
         if (this.collisionCount > 0) this.applyColorFilter(Pet.randomColor())
 
-        this.gameInstance.ctx.drawImage(this.canvas, this.state.position.x, this.state.position.y)
+        this.gameCanvasInstance.ctx.drawImage(this.canvas, this.state.position.x, this.state.position.y)
     }
 
     createImageCanvas() {
@@ -172,7 +174,7 @@ export default class Pet {
     checkCollision() {
         const { x, y } = this.state.position
         const { width, height } = this.state
-        const { width: canvasWidth, height: canvasHeight, incrementScore } = this.gameInstance
+        const { width: canvasWidth, height: canvasHeight } = this.gameCanvasInstance
 
         // Verifica se a imagem atingiu a borda direita do canvas
         if (x + width >= canvasWidth) {
@@ -203,14 +205,14 @@ export default class Pet {
         }
 
         if (this.collisionCount === 1) {
-            incrementScore(this.state.scoreIncrement, 'normal', this.state)
+            this.gameInstance.incrementScore(this.state.scoreIncrement, 'normal', this.state)
             this.state.score += this.state.scoreIncrement
         }
 
         if (this.collisionCount === 2) {
             const score = this.state.scoreIncrement * this.state.bonusMultiplier
 
-            incrementScore(score, 'bonus', this.state)
+            this.gameInstance.incrementScore(score, 'bonus', this.state)
             this.state.score += score
         }
     }

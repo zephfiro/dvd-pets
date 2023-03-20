@@ -1,3 +1,7 @@
 import { Game } from './src/game/game'
 
-window.game = Game(document.getElementById('app'))
+const game = Game(document.getElementById('app'))
+
+window.game = game
+
+$('body').on('click', '#catricio', () => game.incrementScore(1, 'normal'))

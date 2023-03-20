@@ -7,7 +7,7 @@ export const GameLayout = () => {
                     ${catricio()}
                     ${shop()}
                 </div>
-                <div id="canvas" class="col-md-6"></div>
+                <div id="canvas" class="col-md-6 p-0 h-100"></div>
                 <div id="pet-infos" class="col-md-3 h-100"></div>
             </div>
         </div>
