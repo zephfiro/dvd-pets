@@ -174,6 +174,7 @@ export default class Pet {
         const { width, height } = this.state
         const { width: canvasWidth, height: canvasHeight, incrementScore } = this.gameInstance
 
+        // Verifica se a imagem atingiu a borda direita do canvas
         if (x + width >= canvasWidth) {
             this.state.direction.x *= -1 // Inverte a direção horizontal
             this.state.position.x = canvasWidth - width // Define a posição da imagem para dentro do canvas
@@ -202,13 +203,15 @@ export default class Pet {
         }
 
         if (this.collisionCount === 1) {
-            incrementScore(this.state.scoreIncrement, this.state)
+            incrementScore(this.state.scoreIncrement, 'normal', this.state)
             this.state.score += this.state.scoreIncrement
         }
 
         if (this.collisionCount === 2) {
-            incrementScore(this.state.scoreIncrement * this.state.bonusMultiplier, this.state)
-            this.state.score += this.state.scoreIncrement
+            const score = this.state.scoreIncrement * this.state.bonusMultiplier
+
+            incrementScore(score, 'bonus', this.state)
+            this.state.score += score
         }
     }
 }

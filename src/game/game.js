@@ -100,9 +100,9 @@ export const Game = (container, { dispatchScore } = {}) => {
         return { x, y }
     }
 
-    const incrementScore = (score, dispatcher) => {
+    const incrementScore = (score, type, dispatcher) => {
         state.score += score
-        dispatchScore?.(state.score, dispatcher)
+        dispatchScore?.({ gameScore: state.score, type, dispatcher, incrementedScore: score })
     }
 
     const getPets = () => state.pets
