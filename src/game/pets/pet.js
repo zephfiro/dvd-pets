@@ -9,7 +9,6 @@ export default class Pet {
     static BONUS_MULTIPLIER = 10
     static BASE_SPRITE_PATH = '/src/sprites'
     static randomSing = () => (Math.random() < 0.5 ? -1 : 1)
-    static randomColor = () => ({ r: Math.random(), g: Math.random(), b: Math.random() })
     static randomIntNumber = (min, max) => Math.floor(Math.random() * max) + min
 
     constructor({ gameInstance, ...stateParams }) {
@@ -19,6 +18,7 @@ export default class Pet {
     }
 
     ctx = null
+    filterColor = null
     canvas = null
     collisionCount = 0
     gameInstance = null
@@ -112,7 +112,7 @@ export default class Pet {
     render() {
         if (!this.canvas) this.createImageCanvas()
 
-        if (this.collisionCount > 0) this.applyColorFilter(Pet.randomColor())
+        if (this.collisionCount > 0) this.applyColorFilter(this.getRandomColor())
 
         this.gameCanvasInstance.ctx.drawImage(this.canvas, this.state.position.x, this.state.position.y)
     }
@@ -128,7 +128,16 @@ export default class Pet {
     }
 
     getRandomColor() {
-        return { r: Math.random(), g: Math.random(), b: Math.random() }
+        const rand = () => (Math.random() > 0.5 ? 0 : 1)
+        const randColor = { r: rand(), g: rand(), b: rand() }
+
+        if (Object.values(randColor).every((color) => color === 0) || this.filterColor === randColor) {
+            return this.getRandomColor()
+        }
+
+        this.filterColor = randColor
+
+        return randColor
     }
 
     applyColorFilter({ r, g, b }) {
