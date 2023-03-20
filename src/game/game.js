@@ -1,3 +1,4 @@
+import { GameLayout } from './components/gameLayout'
 import Bananamster from './pets/bananamster'
 import Breadoggo from './pets/breadoggo'
 import Catomato from './pets/catomato'
@@ -21,6 +22,7 @@ export const Game = (container, { dispatchScore } = {}) => {
         backgroundColor: '#000000',
         canvas: null,
         container: null,
+        canvasContainer: null,
         ctx: null
     }
 
@@ -29,14 +31,18 @@ export const Game = (container, { dispatchScore } = {}) => {
     }
 
     const setContainer = () => {
-        setState({ container, width: container.offsetWidth, height: container.offsetHeight })
+        setState({
+            container,
+            width: state.canvasContainer.offsetWidth,
+            height: state.canvasContainer.offsetHeight
+        })
     }
 
     const createCanvas = () => {
         const canvas = document.createElement('canvas')
         const ctx = canvas.getContext('2d')
 
-        state.container.appendChild(canvas)
+        state.canvasContainer.appendChild(canvas)
 
         setState({ canvas, ctx })
         updateCanvasSize()
@@ -61,7 +67,7 @@ export const Game = (container, { dispatchScore } = {}) => {
             setContainer()
             updateCanvasSize()
             updatePetsPosition()
-        }).observe(state.container)
+        }).observe(state.canvasContainer)
     }
 
     const getUniqueRandomPosition = () => {
@@ -110,6 +116,10 @@ export const Game = (container, { dispatchScore } = {}) => {
     }
 
     const init = () => {
+        container.innerHTML = GameLayout()
+
+        state.canvasContainer = document.getElementById('canvas')
+
         setContainer()
         createCanvas()
         addResize()

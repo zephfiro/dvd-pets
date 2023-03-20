@@ -9,4 +9,107 @@ body {
 #app {
     height: 100%;
     width: 100%;
+    background-image: url('https://construct-static.com/uploads/116805/c1f0164b-59ff-42e1-961a-78c709b58dd6/example03.png');
+}
+
+#game-score {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+    #score {
+        width: 301px;
+        height: 125px;
+
+        background: rgba(192, 244, 255, 0.5);
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        #points {
+            font-style: normal;
+            font-weight: 400;
+            font-size: 48px;
+            line-height: 58px;
+
+            color: #c0f4ff;
+        }
+
+        #loves-per-second {
+            font-style: normal;
+            font-weight: 300;
+            font-size: 16px;
+            line-height: 19px;
+
+            color: #c0f4ff;
+        }
+    }
+
+    #catricio {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+
+        img {
+            box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+        }
+
+        #name {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 218px;
+            height: 43px;
+
+            background: rgba(192, 244, 255, 0.5);
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+
+            span {
+                font-style: normal;
+                font-weight: 400;
+                font-size: 26px;
+                line-height: 31px;
+
+                color: #c0f4ff;
+            }
+        }
+
+        &:hover {
+            filter: brightness(0.9);
+            cursor: pointer;
+        }
+    }
+
+    #shop {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 26px;
+        line-height: 31px;
+
+        #shop-button {
+            color: #c0f4ff;
+            width: 301px;
+            height: 65px;
+
+            background: rgba(145, 200, 212, 0.67);
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border: #c0f4ff;
+
+            &:hover {
+                filter: brightness(0.9);
+            }
+        }
+    }
+}
+
+#canvas {
+    background-color: black;
 }
