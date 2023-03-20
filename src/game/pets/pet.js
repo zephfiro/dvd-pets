@@ -4,7 +4,7 @@ export default class Pet {
     static DEFAULT_WIDTH = 200
     static DEFAULT_HEIGHT = 200
     static DEFAULT_SPEED_X = 4
-    static DEFAULT_SPEED_Y = -3
+    static DEFAULT_SPEED_Y = 3
     static DEFAULT_SCORE_INCREMENT = 1
     static BONUS_MULTIPLIER = 10
     static BASE_SPRITE_PATH = '/src/sprites'
@@ -12,31 +12,32 @@ export default class Pet {
     static randomColor = () => ({ r: Math.random(), g: Math.random(), b: Math.random() })
     static randomIntNumber = (min, max) => Math.floor(Math.random() * max) + min
 
-    ctx = null
-    canvas = null
-    collisionCount = 0
-    gameInstance = null
-    maxChangeColor = Pet.randomIntNumber(1, 20)
-
-    state = {
-        id: null,
-        name: '',
-        type: '',
-        width: 0,
-        height: 0,
-        sprite: null,
-        bitmapImg: null,
-        position: { x: 0, y: 0 },
-        speed: { x: 0, y: 0 },
-        score: 0
-    }
-
     constructor({ gameInstance, ...stateParams }) {
         this.gameInstance = gameInstance
         this.setInitialState(stateParams)
     }
 
-    setInitialState({ name, type, width, height, position, score: scoreIncrement, speed, spritePath }) {
+    ctx = null
+    canvas = null
+    collisionCount = 0
+    gameInstance = null
+    maxChangeColor = Pet.randomIntNumber(1, 20)
+    bitmapImg = null
+
+    state = {
+        id: null,
+        name: '',
+        type: '',
+        spritePath: '',
+        width: 0,
+        height: 0,
+        sprite: null,
+        position: { x: 0, y: 0 },
+        speed: { x: 0, y: 0 },
+        score: 0
+    }
+
+    setInitialState({ name, type, width, height, position, scoreIncrement, speed, spritePath }) {
         Object.assign(this.state, {
             name,
             type,
@@ -50,6 +51,10 @@ export default class Pet {
             sprite: this.createSprite(spritePath),
             position: this.getPosition(position)
         })
+    }
+
+    getInfo() {
+        return this.state
     }
 
     getSpeed({ x = Pet.DEFAULT_SPEED_X, y = Pet.DEFAULT_SPEED_Y } = {}) {
@@ -79,7 +84,7 @@ export default class Pet {
                 resizeHeight: this.state.height,
                 resizeQuality: 'pixelated'
             }).then((bitmapImg) => {
-                this.state.bitmapImg = bitmapImg
+                this.bitmapImg = bitmapImg
                 this.render()
             })
         }
@@ -117,7 +122,7 @@ export default class Pet {
         this.canvas.width = this.state.width
         this.canvas.height = this.state.height
 
-        this.ctx.drawImage(this.state.bitmapImg, 0, 0)
+        this.ctx.drawImage(this.bitmapImg, 0, 0)
     }
 
     getRandomColor() {
@@ -125,7 +130,7 @@ export default class Pet {
     }
 
     applyColorFilter({ r, g, b }) {
-        this.ctx.drawImage(this.state.bitmapImg, 0, 0)
+        this.ctx.drawImage(this.bitmapImg, 0, 0)
 
         if (!this.maxChangeColor) {
             this.maxChangeColor = Pet.randomIntNumber(1, 20)

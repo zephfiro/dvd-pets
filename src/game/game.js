@@ -64,8 +64,17 @@ export const Game = (container, { dispatchScore } = {}) => {
         }).observe(state.container)
     }
 
+    const getUniqueRandomPosition = () => {
+        const { x, y } = getRandomPosition()
+        const hasPosition = state.pets.some(({ state }) => state.position.x === x && state.position.y === y)
+
+        if (hasPosition) return getUniqueRandomPosition()
+
+        return { x, y }
+    }
+
     const updatePetsPosition = () => {
-        state.pets.forEach((pet) => pet.setPosition(getRandomPosition()))
+        state.pets.forEach((pet) => pet.setPosition(getUniqueRandomPosition()))
     }
 
     const addPet = (type) => {
