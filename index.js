@@ -7,7 +7,7 @@ window.game = game
 $('body').on('click', '#catricio', () => game.incrementScore(1, 'normal'))
 
 $('body').on('mouseleave', () => {
-    let timeout = setTimeout(() => game.changeToFullScreen(), 1000 * 5)
+    let timeout = setTimeout(() => game.changeToFullScreen(), 1000)
 
     $('body').on('mouseenter', () => {
         clearTimeout(timeout)

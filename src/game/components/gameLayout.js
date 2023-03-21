@@ -24,7 +24,7 @@ const score = (score = 0, points = 0) => {
 const catricio = () => {
     return `
         <div id="catricio">
-            <img src="/images/catricio.png" />
+            <img class="grabbable" src="/images/catricio.png" />
             <div id="name">
                 <span>Catricio</span>
             </div>
