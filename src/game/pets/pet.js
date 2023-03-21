@@ -1,4 +1,7 @@
+import { Utils } from '../utils'
+
 // constructor => { name, type, width, height, spritePath, positionX, positionY, gameInstance, speed, score }
+const utils = Utils()
 
 export default class Pet {
     static DEFAULT_WIDTH = 200
@@ -6,9 +9,10 @@ export default class Pet {
     static DEFAULT_SPEED_X = 4
     static DEFAULT_SPEED_Y = 3
     static DEFAULT_SCORE_INCREMENT = 1
+    static SPRIT_LEFT_DIRECTION = -1
+    static SPRIT_RIGHT_DIRECTION = 1
     static BONUS_MULTIPLIER = 10
     static BASE_SPRITE_PATH = '/src/sprites'
-    static randomSing = () => (Math.random() < 0.5 ? -1 : 1)
 
     constructor({ gameInstance, ...stateParams }) {
         this.gameInstance = gameInstance
@@ -34,10 +38,21 @@ export default class Pet {
         sprite: null,
         position: { x: 0, y: 0 },
         speed: { x: 0, y: 0 },
-        score: 0
+        score: 0,
+        spriteDirection: null
     }
 
-    setInitialState({ name, type, width, height, position, scoreIncrement, speed, spritePath }) {
+    setInitialState({
+        name,
+        type,
+        width,
+        height,
+        position,
+        scoreIncrement,
+        speed,
+        spritePath,
+        spriteDirection
+    }) {
         Object.assign(this.state, {
             name,
             type,
@@ -45,11 +60,12 @@ export default class Pet {
             scoreIncrement: scoreIncrement ?? Pet.DEFAULT_SCORE_INCREMENT,
             bonusMultiplier: Pet.BONUS_MULTIPLIER,
             speed: this.getSpeed(speed),
-            direction: { x: Pet.randomSing(), y: Pet.randomSing() },
+            direction: { x: utils.randomFlip(1, -1), y: utils.randomFlip(1, -1) },
             width: width ?? Pet.DEFAULT_WIDTH,
             height: height ?? Pet.DEFAULT_HEIGHT,
             sprite: this.createSprite(spritePath),
-            position: this.getPosition(position)
+            position: this.getPosition(position),
+            spriteDirection: spriteDirection ?? null
         })
     }
 
@@ -66,7 +82,7 @@ export default class Pet {
     }
 
     createId() {
-        const id = Math.random().toString(36).substring(2, 9)
+        const id = utils.uuid()
 
         if (this.gameInstance.pets.some((pet) => pet.state.id === id)) return this.createId()
 
@@ -85,6 +101,7 @@ export default class Pet {
                 resizeQuality: 'pixelated'
             }).then((bitmapImg) => {
                 this.bitmapImg = bitmapImg
+                this.createImageCanvas()
                 this.render()
             })
         }
@@ -103,45 +120,58 @@ export default class Pet {
     }
 
     incrementPosition() {
-        this.state.position.x += this.state.speed.x * this.state.direction.x
-        this.state.position.y += this.state.speed.y * this.state.direction.y
-    }
+        const fpsMultiplier = 100 / this.gameInstance.fps
 
-    renderImage() {
-        // if (this.state.direction.x === 1) {
-        // this.ctx.scale(1, 1)
-        this.ctx.drawImage(this.bitmapImg, 0, 0)
-        // } else {
-        // this.ctx.scale(-1, 1)
-        // this.ctx.drawImage(this.bitmapImg, this.state.width * -1, 0)
-        // }
-    }
-
-    render() {
-        if (!this.canvas) this.createImageCanvas()
-
-        this.renderImage()
-
-        if (this.collisionCount > 0) this.applyColorFilter(this.getRandomColor())
-
-        this.gameCanvasInstance.ctx.drawImage(this.canvas, this.state.position.x, this.state.position.y)
+        this.state.position.x += this.state.speed.x * this.state.direction.x * fpsMultiplier
+        this.state.position.y += this.state.speed.y * this.state.direction.y * fpsMultiplier
     }
 
     createImageCanvas() {
         this.canvas = document.createElement('canvas')
         this.ctx = this.canvas.getContext('2d', { willReadFrequently: true })
 
+        this.ctx.imageSmoothingEnabled = false
         this.canvas.width = this.state.width
         this.canvas.height = this.state.height
+
+        this.renderImage()
+    }
+
+    renderImage() {
+        const { spriteDirection, direction } = this.state
+
+        this.clearImage()
+
+        if (spriteDirection && direction.x !== spriteDirection) this.invertImageDirection()
+        else this.ctx.drawImage(this.bitmapImg, 0, 0)
+    }
+
+    clearImage() {
+        this.ctx.clearRect(0, 0, this.state.width, this.state.height)
+    }
+
+    invertImageDirection() {
+        this.ctx.save()
+        this.ctx.scale(-1, 1)
+        this.ctx.drawImage(this.bitmapImg, this.state.width * -1, 0)
+        this.ctx.scale(1, 1)
+        this.ctx.restore()
+    }
+
+    render() {
+        if (this.collisionCount > 0) {
+            this.renderImage()
+            this.applyColorFilter(this.getRandomColor())
+        }
+
+        this.gameCanvasInstance.ctx.drawImage(this.canvas, this.state.position.x, this.state.position.y)
     }
 
     getRandomColor() {
-        const rand = () => (Math.random() > 0.5 ? 0 : 1)
-        const sumColor = (color) => Object.values(color).reduce((acc, val) => acc + val, 0)
-        const randColor = { r: rand(), g: rand(), b: rand() }
-        const sum = sumColor(randColor)
+        const randColor = { r: utils.randomFlip(0, 1), g: utils.randomFlip(0, 1), b: utils.randomFlip(0, 1) }
+        const isBlack = Object.values(randColor).every((value) => value === 0)
 
-        if (sum === 0 || sumColor(this.filterColor ?? {}) === sum) return this.getRandomColor()
+        if (isBlack || utils.isSameObject(randColor, this.filterColor)) return this.getRandomColor()
 
         this.filterColor = randColor
 
@@ -179,6 +209,10 @@ export default class Pet {
 
     setPosition(position) {
         Object.assign(this.state.position, position)
+    }
+
+    remove() {
+        this.gameInstance.pets = this.gameInstance.pets.filter((pet) => pet.state.id !== this.state.id)
     }
 
     checkCollision() {

@@ -6,6 +6,7 @@ export default class Dripturtle extends Pet {
             ...params,
             name: 'Tartaruga Badass',
             type: 'dripturtle',
+            spriteDirection: Pet.SPRIT_LEFT_DIRECTION,
             spritePath: `${Pet.BASE_SPRITE_PATH}/dripturtle.png`
         })
     }

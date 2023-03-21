@@ -4,6 +4,7 @@ import Breadoggo from './pets/breadoggo'
 import Catomato from './pets/catomato'
 import Dripturtle from './pets/dripturtle'
 import ScarryDog from './pets/scarry_dog'
+import { Utils } from './utils'
 
 const PETS = {
     scarry_dog: ScarryDog,
@@ -13,10 +14,13 @@ const PETS = {
     bananamster: Bananamster
 }
 
+const utils = Utils()
+
 export const Game = (container) => {
     const state = {
         pets: [],
         score: 0,
+        fps: 75,
         container: null,
         canvasState: {
             width: 0,
@@ -56,15 +60,29 @@ export const Game = (container) => {
         updateCanvasSize()
     }
 
+    const gameCicle = () => {
+        let lastTimestamp = 0
+
+        const cicle = () => {
+            const timestamp = Date.now()
+
+            if (timestamp - lastTimestamp > 1000 / state.fps) {
+                renderGame()
+                lastTimestamp = timestamp
+            }
+
+            requestAnimationFrame(cicle)
+        }
+
+        requestAnimationFrame(cicle)
+    }
+
     const renderGame = () => {
         const { ctx, width, height, backgroundColor } = state.canvasState
 
         ctx.fillStyle = backgroundColor
         ctx.fillRect(0, 0, width, height)
-
         state.pets.forEach((pet) => pet.move())
-
-        requestAnimationFrame(renderGame)
     }
 
     const updateCanvasSize = () => {
@@ -83,7 +101,8 @@ export const Game = (container) => {
     }
 
     const getUniqueRandomPosition = () => {
-        const { x, y } = getRandomPosition()
+        const { x, y } = utils.getRandomPosition(state.canvasState.width, state.canvasState.height)
+
         const hasPosition = state.pets.some(({ state }) => state.position.x === x && state.position.y === y)
 
         if (hasPosition) return getUniqueRandomPosition()
@@ -96,22 +115,19 @@ export const Game = (container) => {
     }
 
     const addPet = (type) => {
-        const Pet = PETS[type]
+        const PetClass = PETS[type]
 
-        if (!Pet) return
+        if (!PetClass) return
 
-        const pet = new Pet({ gameInstance: state, position: getUniqueRandomPosition() })
-
-        state.pets.push(pet)
+        insertPet(new PetClass({ gameInstance: state, position: getUniqueRandomPosition() }))
     }
 
-    const getRandomPosition = () => {
-        const { width, height } = state.canvasState
+    const insertPet = (Pet) => {
+        const hasInState = state.pets.some((pet) => pet.state.id === Pet.state.id)
 
-        const x = Math.random() * width
-        const y = Math.random() * height
+        if (hasInState) return
 
-        return { x, y }
+        state.pets.push(Pet)
     }
 
     const incrementScore = (score, type, dispatcher) => {
@@ -133,6 +149,7 @@ export const Game = (container) => {
         state.addPet = addPet
         state.getPets = getPets
         state.findPet = findPet
+        state.insertPet = insertPet
     }
 
     const setGameLayout = () => {
@@ -146,8 +163,7 @@ export const Game = (container) => {
         createCanvas()
         setInstance()
         addResize()
-
-        requestAnimationFrame(renderGame)
+        gameCicle()
     }
 
     init()
