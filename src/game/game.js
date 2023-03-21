@@ -150,10 +150,22 @@ export const Game = (container) => {
         state.getPets = getPets
         state.findPet = findPet
         state.insertPet = insertPet
+        state.changeToFullScreen = changeToFullScreen
+        state.resetFullScreen = resetFullScreen
     }
 
     const setGameLayout = () => {
         state.container.innerHTML = GameLayout()
+    }
+
+    const changeToFullScreen = () => {
+        $('#game-score, #pet-infos').addClass('collapsed')
+        $('#canvas').addClass('fullscreen')
+    }
+
+    const resetFullScreen = () => {
+        $('#game-score, #pet-infos').removeClass('collapsed')
+        $('#canvas').removeClass('fullscreen')
     }
 
     const init = () => {

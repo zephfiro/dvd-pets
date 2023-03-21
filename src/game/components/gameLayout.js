@@ -1,14 +1,14 @@
 export const GameLayout = () => {
     return `
-        <div class="container-fluid h-100">
-            <div class="row h-100">
-                <div id="game-score" class="col-md-3 h-100">
+        <div class="container-fluid p-0 h-100">
+            <div class="d-flex flex-row h-100">
+                <div id="game-score" class="col-md-3 p-0 h-100">
                     ${score()}
                     ${catricio()}
                     ${shop()}
                 </div>
                 <div id="canvas" class="col-md-6 p-0 h-100"></div>
-                <div id="pet-infos" class="col-md-3 h-100"></div>
+                <div id="pet-infos" class="col-md-3 p-0 h-100"></div>
             </div>
         </div>
     `

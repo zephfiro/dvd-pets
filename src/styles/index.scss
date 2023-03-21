@@ -110,6 +110,26 @@ body {
     }
 }
 
+#canvas,
+#pet-infos,
+#game-score {
+    transition: width 0.5s ease;
+}
+
+#pet-infos,
+#game-score {
+    &.collapsed {
+        flex: unset;
+        width: 0;
+    }
+}
+
 #canvas {
     background-color: black;
+
+    &.fullscreen {
+        width: 100vw;
+        max-width: 100vw;
+        flex: unset;
+    }
 }
