@@ -1,3 +1,6 @@
+@import './shop.scss';
+@import './placeholders.scss';
+
 html,
 body {
     margin: 0;
@@ -10,14 +13,6 @@ body {
     height: 100%;
     width: 100%;
     background-image: url('https://construct-static.com/uploads/116805/c1f0164b-59ff-42e1-961a-78c709b58dd6/example03.png');
-}
-
-%laterals {
-    z-index: 1;
-    position: absolute;
-    height: 100%;
-    width: 25%;
-    transition: transform 0.5s ease-in-out;
 }
 
 #game-score {
@@ -100,23 +95,27 @@ body {
         }
     }
 
-    #shop {
+    #shop-btn-container {
         font-style: normal;
         font-weight: 400;
         font-size: 26px;
         line-height: 31px;
 
         #shop-button {
+            @extend %components-background;
+
             color: #c0f4ff;
             width: 301px;
             height: 65px;
-
-            background: rgba(145, 200, 212, 0.67);
-            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-            border: #c0f4ff;
+            cursor: pointer;
+            outline: none;
 
             &:hover {
                 filter: brightness(0.9);
+            }
+
+            &:active {
+                filter: brightness(0.7);
             }
         }
     }

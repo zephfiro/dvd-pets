@@ -1,18 +1,6 @@
 import { GameLayout } from './components/gameLayout'
-import Bananamster from './pets/bananamster'
-import Breadoggo from './pets/breadoggo'
-import Catomato from './pets/catomato'
-import Dripturtle from './pets/dripturtle'
-import ScarryDog from './pets/scarry_dog'
+import { PETS } from './pets/pets'
 import { Utils } from './utils'
-
-const PETS = {
-    scarry_dog: ScarryDog,
-    catomato: Catomato,
-    breadoggo: Breadoggo,
-    dripturtle: Dripturtle,
-    bananamster: Bananamster
-}
 
 const utils = Utils()
 
@@ -60,7 +48,7 @@ export const Game = (container) => {
         updateCanvasSize()
     }
 
-    const gameCicle = () => {
+    const gameCycle = () => {
         let lastTimestamp = 0
 
         const cicle = () => {
@@ -152,13 +140,19 @@ export const Game = (container) => {
         state.insertPet = insertPet
         state.changeToFullScreen = changeToFullScreen
         state.resetFullScreen = resetFullScreen
+        state.toggleShop = toggleShop
+        state.shopIsOpen = shopIsOpen
     }
 
     const setGameLayout = () => {
-        state.container.innerHTML = GameLayout()
+        state.render = GameLayout()
+
+        state.container.innerHTML = state.render.renderLayout()
     }
 
     const changeToFullScreen = () => {
+        if (shopIsOpen()) return
+
         const gameScore = document.getElementById('game-score')
         const petInfos = document.getElementById('pet-infos')
 
@@ -176,6 +170,14 @@ export const Game = (container) => {
         state.canvasState.container.style.width = '50%'
     }
 
+    const shopIsOpen = () => !document.getElementById('shop').classList.contains('hidden')
+
+    const toggleShop = () => {
+        const shop = document.getElementById('shop')
+
+        shop.classList.toggle('hidden')
+    }
+
     const init = () => {
         setState({ container })
         setGameLayout()
@@ -183,7 +185,7 @@ export const Game = (container) => {
         createCanvas()
         setInstance()
         addResize()
-        gameCicle()
+        gameCycle()
     }
 
     init()
