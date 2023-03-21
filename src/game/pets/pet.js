@@ -9,7 +9,6 @@ export default class Pet {
     static BONUS_MULTIPLIER = 10
     static BASE_SPRITE_PATH = '/src/sprites'
     static randomSing = () => (Math.random() < 0.5 ? -1 : 1)
-    static randomIntNumber = (min, max) => Math.floor(Math.random() * max) + min
 
     constructor({ gameInstance, ...stateParams }) {
         this.gameInstance = gameInstance
@@ -23,7 +22,6 @@ export default class Pet {
     collisionCount = 0
     gameInstance = null
     gameCanvasInstance = null
-    maxChangeColor = Pet.randomIntNumber(1, 20)
     bitmapImg = null
 
     state = {
@@ -109,8 +107,20 @@ export default class Pet {
         this.state.position.y += this.state.speed.y * this.state.direction.y
     }
 
+    renderImage() {
+        // if (this.state.direction.x === 1) {
+        // this.ctx.scale(1, 1)
+        this.ctx.drawImage(this.bitmapImg, 0, 0)
+        // } else {
+        // this.ctx.scale(-1, 1)
+        // this.ctx.drawImage(this.bitmapImg, this.state.width * -1, 0)
+        // }
+    }
+
     render() {
         if (!this.canvas) this.createImageCanvas()
+
+        this.renderImage()
 
         if (this.collisionCount > 0) this.applyColorFilter(this.getRandomColor())
 
@@ -123,17 +133,15 @@ export default class Pet {
 
         this.canvas.width = this.state.width
         this.canvas.height = this.state.height
-
-        this.ctx.drawImage(this.bitmapImg, 0, 0)
     }
 
     getRandomColor() {
         const rand = () => (Math.random() > 0.5 ? 0 : 1)
+        const sumColor = (color) => Object.values(color).reduce((acc, val) => acc + val, 0)
         const randColor = { r: rand(), g: rand(), b: rand() }
+        const sum = sumColor(randColor)
 
-        if (Object.values(randColor).every((color) => color === 0) || this.filterColor === randColor) {
-            return this.getRandomColor()
-        }
+        if (sum === 0 || sumColor(this.filterColor ?? {}) === sum) return this.getRandomColor()
 
         this.filterColor = randColor
 
@@ -141,13 +149,6 @@ export default class Pet {
     }
 
     applyColorFilter({ r, g, b }) {
-        this.ctx.drawImage(this.bitmapImg, 0, 0)
-
-        if (!this.maxChangeColor) {
-            this.maxChangeColor = Pet.randomIntNumber(1, 20)
-            return
-        } else this.maxChangeColor--
-
         const clipPath = new Path2D()
 
         clipPath.rect(0, 0, this.state.width, this.state.height)
