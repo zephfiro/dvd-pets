@@ -1,0 +1,13 @@
+@import './placeholders.scss';
+
+#shop {
+    @extend %laterals;
+    @extend %components-background;
+
+    right: 0;
+    z-index: 2;
+
+    &.hidden {
+        transform: translateX(25vw);
+    }
+}
