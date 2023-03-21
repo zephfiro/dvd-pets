@@ -1,15 +1,13 @@
 export const GameLayout = () => {
     return `
-        <div class="container-fluid p-0 h-100">
-            <div class="d-flex flex-row h-100">
-                <div id="game-score" class="col-md-3 p-0 h-100">
-                    ${score()}
-                    ${catricio()}
-                    ${shop()}
-                </div>
-                <div id="canvas" class="col-md-6 p-0 h-100"></div>
-                <div id="pet-infos" class="col-md-3 p-0 h-100"></div>
+        <div class="d-flex align-itens-center justify-content-center h-100 w-100 postion-relative">
+            <div id="game-score">
+                ${score()}
+                ${catricio()}
+                ${shop()}
             </div>
+            <div id="canvas"></div>
+            <div id="pet-infos"></div>
         </div>
     `
 }

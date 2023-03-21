@@ -159,13 +159,21 @@ export const Game = (container) => {
     }
 
     const changeToFullScreen = () => {
-        $('#game-score, #pet-infos').addClass('collapsed')
-        $('#canvas').addClass('fullscreen')
+        const gameScore = document.getElementById('game-score')
+        const petInfos = document.getElementById('pet-infos')
+
+        gameScore.style.transform = `translateX(${-gameScore.offsetWidth}px)`
+        petInfos.style.transform = `translateX(${petInfos.offsetWidth}px)`
+        state.canvasState.container.style.width = '100%'
     }
 
     const resetFullScreen = () => {
-        $('#game-score, #pet-infos').removeClass('collapsed')
-        $('#canvas').removeClass('fullscreen')
+        const gameScore = document.getElementById('game-score')
+        const petInfos = document.getElementById('pet-infos')
+
+        gameScore.style.transform = `translateX(0px)`
+        petInfos.style.transform = `translateX(0px)`
+        state.canvasState.container.style.width = '50%'
     }
 
     const init = () => {

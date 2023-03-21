@@ -12,7 +12,18 @@ body {
     background-image: url('https://construct-static.com/uploads/116805/c1f0164b-59ff-42e1-961a-78c709b58dd6/example03.png');
 }
 
+%laterals {
+    z-index: 1;
+    position: absolute;
+    height: 100%;
+    width: 25%;
+    transition: transform 0.5s ease-in-out;
+}
+
 #game-score {
+    @extend %laterals;
+
+    left: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -110,26 +121,17 @@ body {
     }
 }
 
-#canvas,
-#pet-infos,
-#game-score {
-    transition: width 0.5s ease;
-}
+#pet-infos {
+    @extend %laterals;
 
-#pet-infos,
-#game-score {
-    &.collapsed {
-        flex: unset;
-        width: 0;
-    }
+    left: 100%;
 }
 
 #canvas {
+    width: 50%;
+    height: 100%;
     background-color: black;
-
-    &.fullscreen {
-        width: 100vw;
-        max-width: 100vw;
-        flex: unset;
-    }
+    position: absolute;
+    z-index: 1;
+    transition: width 0.5s ease-in-out;
 }
