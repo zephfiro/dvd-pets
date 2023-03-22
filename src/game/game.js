@@ -1,15 +1,15 @@
 import { GameLayout } from './components/gameLayout'
 import { PETS } from './pets/pets'
-import { Utils } from './utils'
+import { Utils as utility } from './utils'
 
-const utils = Utils()
-
-export const Game = (container) => {
+export const Game = (container, Utils = utility) => {
+    const utils = Utils()
     const state = {
         pets: [],
         score: 0,
         fps: 75,
         container: null,
+        sprites: {},
         canvasState: {
             width: 0,
             height: 0,
@@ -105,9 +105,10 @@ export const Game = (container) => {
     const addPet = (type) => {
         const PetClass = PETS[type]
 
-        if (!PetClass) return
+        if (!PetClass || state.score < PetClass.PRICE) return
 
-        insertPet(new PetClass({ gameInstance: state, position: getUniqueRandomPosition() }))
+        incrementScore(-PetClass.PRICE, 'buy')
+        insertPet(new PetClass(state, { position: getUniqueRandomPosition() }))
     }
 
     const insertPet = (Pet) => {
@@ -145,7 +146,7 @@ export const Game = (container) => {
     }
 
     const setGameLayout = () => {
-        state.render = GameLayout()
+        state.render = GameLayout(state)
 
         state.container.innerHTML = state.render.renderLayout()
     }
@@ -178,14 +179,28 @@ export const Game = (container) => {
         shop.classList.toggle('hidden')
     }
 
+    const createSprites = async () => {
+        await Promise.all(Object.entries(PETS).map(([key, Pet]) => createSprite(key, Pet)))
+    }
+
+    const createSprite = async (key, Pet) => {
+        const width = Pet.DEFAULT_WIDTH
+        const height = Pet.DEFAULT_HEIGHT
+        const path = Pet.SPRITE_PATH
+
+        return await utils.createSprite(path, width, height).then((sprite) => (state.sprites[key] = sprite))
+    }
+
     const init = () => {
         setState({ container })
-        setGameLayout()
-        setCanvasContainer()
-        createCanvas()
-        setInstance()
-        addResize()
-        gameCycle()
+        createSprites().then(() => {
+            setGameLayout()
+            setCanvasContainer()
+            createCanvas()
+            setInstance()
+            addResize()
+            gameCycle()
+        })
     }
 
     init()

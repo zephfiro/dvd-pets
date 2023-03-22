@@ -5,12 +5,15 @@ export default class ScarryDog extends Pet {
     static NAME = 'Cachorrinho fia da puta'
     static PRICE = 100
 
-    constructor(params) {
-        super({
+    constructor(gameInstace, params, utils) {
+        const defaultParams = {
             ...params,
             name: 'Cachorrinho fia da puta',
             type: 'scarry_dog',
-            spritePath: ScarryDog.SPRITE_PATH
-        })
+            spritePath: ScarryDog.SPRITE_PATH,
+            spriteDirection: Pet.SPRIT_LEFT_DIRECTION
+        }
+
+        super(gameInstace, defaultParams, utils)
     }
 }

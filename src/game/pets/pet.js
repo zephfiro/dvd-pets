@@ -1,11 +1,8 @@
 import { Utils } from '../utils'
 
-// constructor => { name, type, width, height, spritePath, positionX, positionY, gameInstance, speed, score }
-const utils = Utils()
-
 export default class Pet {
-    static DEFAULT_WIDTH = 200
-    static DEFAULT_HEIGHT = 200
+    static DEFAULT_WIDTH = 150
+    static DEFAULT_HEIGHT = 150
     static DEFAULT_SPEED_X = 4
     static DEFAULT_SPEED_Y = 3
     static DEFAULT_SCORE_INCREMENT = 1
@@ -14,19 +11,22 @@ export default class Pet {
     static BONUS_MULTIPLIER = 10
     static BASE_SPRITE_PATH = '/src/sprites'
 
-    constructor({ gameInstance, ...stateParams }) {
+    constructor(gameInstance, stateParams, utils = Utils) {
+        this.utils = utils()
         this.gameInstance = gameInstance
         this.gameCanvasInstance = gameInstance.canvasState
         this.setInitialState(stateParams)
+        this.createSprite()
     }
 
+    utils = null
     ctx = null
     filterColor = null
     canvas = null
     collisionCount = 0
     gameInstance = null
     gameCanvasInstance = null
-    bitmapImg = null
+    bitmapImage = null
 
     state = {
         id: null,
@@ -50,8 +50,9 @@ export default class Pet {
         position,
         scoreIncrement,
         speed,
-        spritePath,
-        spriteDirection
+        spriteDirection,
+        sprite,
+        spritePath
     }) {
         Object.assign(this.state, {
             name,
@@ -60,13 +61,23 @@ export default class Pet {
             scoreIncrement: scoreIncrement ?? Pet.DEFAULT_SCORE_INCREMENT,
             bonusMultiplier: Pet.BONUS_MULTIPLIER,
             speed: this.getSpeed(speed),
-            direction: { x: utils.randomFlip(1, -1), y: utils.randomFlip(1, -1) },
+            direction: { x: this.utils.randomFlip(1, -1), y: this.utils.randomFlip(1, -1) },
             width: width ?? Pet.DEFAULT_WIDTH,
             height: height ?? Pet.DEFAULT_HEIGHT,
-            sprite: this.createSprite(spritePath),
+            sprite: sprite ?? this.gameInstance.sprites[type],
             position: this.getPosition(position),
-            spriteDirection: spriteDirection ?? null
+            spriteDirection: spriteDirection ?? null,
+            spritePath
         })
+    }
+
+    createSprite() {
+        this.utils
+            .createBitmapImage(this.state.sprite, this.state.width, this.state.height)
+            .then((bitmapImage) => {
+                this.bitmapImage = bitmapImage
+                this.createImageCanvas()
+            })
     }
 
     getInfo() {
@@ -82,31 +93,11 @@ export default class Pet {
     }
 
     createId() {
-        const id = utils.uuid()
+        const id = this.utils.uuid()
 
         if (this.gameInstance.pets.some((pet) => pet.state.id === id)) return this.createId()
 
         return id
-    }
-
-    createSprite(spritePath) {
-        const img = new Image()
-
-        img.src = spritePath
-
-        img.onload = () => {
-            createImageBitmap(img, {
-                resizeWidth: this.state.width,
-                resizeHeight: this.state.height,
-                resizeQuality: 'pixelated'
-            }).then((bitmapImg) => {
-                this.bitmapImg = bitmapImg
-                this.createImageCanvas()
-                this.render()
-            })
-        }
-
-        return img
     }
 
     move() {
@@ -143,7 +134,7 @@ export default class Pet {
         this.clearImage()
 
         if (spriteDirection && direction.x !== spriteDirection) this.invertImageDirection()
-        else this.ctx.drawImage(this.bitmapImg, 0, 0)
+        else this.ctx.drawImage(this.bitmapImage, 0, 0)
     }
 
     clearImage() {
@@ -153,7 +144,7 @@ export default class Pet {
     invertImageDirection() {
         this.ctx.save()
         this.ctx.scale(-1, 1)
-        this.ctx.drawImage(this.bitmapImg, this.state.width * -1, 0)
+        this.ctx.drawImage(this.bitmapImage, this.state.width * -1, 0)
         this.ctx.scale(1, 1)
         this.ctx.restore()
     }
@@ -168,10 +159,14 @@ export default class Pet {
     }
 
     getRandomColor() {
-        const randColor = { r: utils.randomFlip(0, 1), g: utils.randomFlip(0, 1), b: utils.randomFlip(0, 1) }
+        const randColor = {
+            r: this.utils.randomFlip(0, 1),
+            g: this.utils.randomFlip(0, 1),
+            b: this.utils.randomFlip(0, 1)
+        }
         const isBlack = Object.values(randColor).every((value) => value === 0)
 
-        if (isBlack || utils.isSameObject(randColor, this.filterColor)) return this.getRandomColor()
+        if (isBlack || this.utils.isSameObject(randColor, this.filterColor)) return this.getRandomColor()
 
         this.filterColor = randColor
 
