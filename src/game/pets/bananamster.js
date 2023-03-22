@@ -4,7 +4,7 @@ export default class Bananamster extends Pet {
     static SPRITE_PATH = `${Pet.BASE_SPRITE_PATH}/bananamster.png`
     static NAME = 'Banana LOCAAAAA'
     static PRICE = 1000
-    static DEFAULT_WIDTH = 120
+    static DEFAULT_WIDTH = 130
     static DEFAULT_HEIGHT = 150
     static DEFAULT_SCORE_INCREMENT = 4
 

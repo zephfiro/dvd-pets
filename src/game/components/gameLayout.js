@@ -1,6 +1,7 @@
 import { PETS } from '../pets/pets'
+import { Utils } from '../utils'
 
-export const GameLayout = (gameIntance) => {
+export const GameLayout = (gameInstance) => {
     const score = (score = 0, points = 0) => {
         return `
             <div id="score">
@@ -44,9 +45,9 @@ export const GameLayout = (gameIntance) => {
         `
     }
 
-    const renderShop = () => {
+    const renderShop = (hidden = true) => {
         return `
-            <div id="shop" class="hidden">
+            <div id="shop" class="${hidden ? 'hidden' : ''}">
                 <ul class="nav nav-tabs">
                     <li class="nav-item">
                         <div class="nav-link active" data-nav="pets">PETS</div>
@@ -60,26 +61,28 @@ export const GameLayout = (gameIntance) => {
                     <div shop-nav-content id="pets" class="d-flex flex-column">
                         ${renderShopItems()}
                     </div>
-                    <div shop-nav-content id="improvements" class="d-flex flex-column">
-                    </div>
+                    <div shop-nav-content id="improvements" class="d-flex flex-column"></div>
                 </div>
             </div>
         `
     }
 
-    const renderShopItems = () =>
-        Object.entries(PETS)
+    const renderShopItems = () => {
+        return Object.entries(PETS)
             .filter(([key]) => key !== 'scarry_dog')
             .map(([key, Pet]) => renderShopItem(key, Pet))
             .join('')
+    }
 
     const renderShopItem = (key, pet) => {
+        const increment = Utils().filterPetsByType(gameInstance.pets, key).length * pet.INCREMENT_PET_BUY
+
         return `
             <div id="shop-item">
                 <div class="card" data-pet-type="${key}" title="Comprar">
                     <div class="card-body d-flex px-2">
                         <div class="shop-pet-img">
-                            <img class="img-fluid" src="${URL.createObjectURL(gameIntance.sprites[key])}" />
+                            <img class="img-fluid" src="${URL.createObjectURL(gameInstance.sprites[key])}" />
                         </div>
                         <div class="item-info d-flex flex-column w-100">
                             <div class="d-flex justify-content-between w-100 aling-items-center">
@@ -87,7 +90,7 @@ export const GameLayout = (gameIntance) => {
                                     <h4 class="mb-0">${pet.NAME}</h4>
                                 </div>
                                 <div id="shop-item-price" class="text-danger">
-                                    <span>${pet.PRICE}❤️</span>
+                                    <span>${Math.floor(pet.PRICE * increment + pet.PRICE)}❤️</span>
                                 </div>
                             </div>
                             <small class="colision-info font-wight-bold mt-3">
@@ -102,5 +105,5 @@ export const GameLayout = (gameIntance) => {
         `
     }
 
-    return { renderLayout }
+    return { renderLayout, renderShop }
 }

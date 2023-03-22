@@ -41,5 +41,15 @@ export const Utils = () => {
         })
     }
 
-    return { randomFlip, uuid, isSameObject, getRandomPosition, createBitmapImage, createSprite }
+    const filterPetsByType = (pets, type) => pets.filter((pet) => pet.state.type === type)
+
+    return {
+        randomFlip,
+        uuid,
+        isSameObject,
+        getRandomPosition,
+        createBitmapImage,
+        createSprite,
+        filterPetsByType
+    }
 }

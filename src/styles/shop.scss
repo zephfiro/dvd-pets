@@ -36,6 +36,13 @@
         }
     }
 
+    #shop-content {
+        @extend %scrollbar;
+        margin: 0.5rem;
+        height: calc(100% - 72px);
+        overflow-y: auto;
+    }
+
     #shop-item {
         padding: 0.5rem;
         user-select: none;

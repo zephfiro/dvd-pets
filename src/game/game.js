@@ -102,13 +102,14 @@ export const Game = (container, Utils = utility) => {
         state.pets.forEach((pet) => pet.setPosition(getUniqueRandomPosition()))
     }
 
-    const addPet = (type) => {
+    const buyPet = (type) => {
         const PetClass = PETS[type]
 
-        if (!PetClass || state.score < PetClass.PRICE) return
+        // if (!PetClass || state.score < PetClass.PRICE) return
 
         incrementScore(-PetClass.PRICE, 'buy')
         insertPet(new PetClass(state, { position: getUniqueRandomPosition() }))
+        $('#shop').after(state.render.renderShop(false)).remove()
     }
 
     const insertPet = (Pet) => {
@@ -135,7 +136,7 @@ export const Game = (container, Utils = utility) => {
 
     const setInstance = () => {
         state.incrementScore = incrementScore
-        state.addPet = addPet
+        state.buyPet = buyPet
         state.getPets = getPets
         state.findPet = findPet
         state.insertPet = insertPet

@@ -10,6 +10,7 @@ export default class Pet {
     static SPRIT_RIGHT_DIRECTION = 1
     static BONUS_MULTIPLIER = 10
     static BASE_SPRITE_PATH = '/src/sprites'
+    static INCREMENT_PET_BUY = 0.4
 
     constructor(gameInstance, stateParams, utils = Utils) {
         this.utils = utils()

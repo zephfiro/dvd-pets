@@ -20,7 +20,7 @@ $('body').on('click', '#shop-button', () => game.toggleShop())
 $('body').on('click', '[data-pet-type]', ({ currentTarget }) => {
     const { petType } = currentTarget.dataset
 
-    game.addPet(petType)
+    game.buyPet(petType)
 })
 
 $('body').on('click', '[data-nav]', ({ currentTarget }) => {
