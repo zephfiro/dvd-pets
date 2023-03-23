@@ -5,10 +5,10 @@ import { Utils } from '../utils'
 export const GameLayout = (gameInstance) => {
     const utils = Utils()
 
-    const score = (score = 0, points = 0) => {
+    const score = (points = 0) => {
         return `
             <div id="score">
-                <span id="points">${score}</span>
+                <span id="points">${gameInstance.score}</span>
                 <span id="loves-per-second">${points} loves per second</span>
             </div>
         `
@@ -129,7 +129,11 @@ export const GameLayout = (gameInstance) => {
 
     const renderimproviments = () => {
         return IMPROVIMENTS.sort((a, b) => utils.sortByAsc(a.price, b.price))
-            .map((improviment) => renderimprovimentsItem(improviment))
+            .map((improviment) => {
+                const isDisabled = gameInstance.improviments.some(({ type }) => type === improviment.type)
+
+                return renderimprovimentsItem(improviment, isDisabled)
+            })
             .join('')
     }
 

@@ -18,6 +18,7 @@ export default class Pet {
         this.gameCanvasInstance = gameInstance.canvasState
         this.setInitialState(stateParams)
         this.createSprite()
+        this.state.improviments.forEach((improviment) => this.setBonusTimeout(improviment))
     }
 
     utils = null
@@ -54,7 +55,9 @@ export default class Pet {
         speed,
         spriteDirection,
         sprite,
-        spritePath
+        spritePath,
+        improviments,
+        score
     }) {
         Object.assign(this.state, {
             name,
@@ -69,7 +72,9 @@ export default class Pet {
             sprite: sprite ?? this.gameInstance.sprites.pets[type].blob,
             position: this.getPosition(position),
             spriteDirection: spriteDirection ?? null,
-            spritePath
+            spritePath,
+            improviments: improviments ?? [],
+            score: score ?? 0
         })
     }
 
@@ -243,7 +248,10 @@ export default class Pet {
         const improviment = { time: 10000, increment: 10, type: 'bonus' }
 
         this.state.improviments.push(improviment)
+        this.setBonusTimeout(improviment)
+    }
 
+    setBonusTimeout(improviment) {
         setTimeout(() => this.state.improviments.shift(), improviment.time)
     }
 

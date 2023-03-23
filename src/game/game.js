@@ -108,8 +108,8 @@ export const Game = (container, Utils = utility) => {
 
     const updatePetsPosition = () => {
         state.pets.forEach((pet) => {
-            const width = state.canvasState.width - state.sprites[pet.state.type].width
-            const height = state.canvasState.height - state.sprites[pet.state.type].height
+            const width = state.canvasState.width - state.sprites.pets[pet.state.type].width
+            const height = state.canvasState.height - state.sprites.pets[pet.state.type].height
 
             pet.setPosition(getUniqueRandomPosition(width, height))
         })
@@ -121,22 +121,24 @@ export const Game = (container, Utils = utility) => {
         const width = state.canvasState.width - state.sprites.pets[type].width
         const height = state.canvasState.height - state.sprites.pets[type].height
 
-        if (!PetClass || state.score < PetClass.PRICE) return
+        // if (!PetClass || state.score < PetClass.PRICE) return
 
         incrementScore(-price, 'buy')
         insertPet(new PetClass(state, { position: getUniqueRandomPosition(width, height) }))
 
         render.updateShopItem(PetClass)
+        setStorage()
     }
 
     const buyImproviment = (type) => {
         const improviment = IMPROVIMENTS.find((improviment) => improviment.type === type)
 
-        if (canBuyImproviment(improviment)) return
+        // if (canBuyImproviment(improviment)) return
 
         incrementScore(-improviment.price, 'buy')
         state.improviments.push({ ...improviment })
         render.updateImprovimentItem(improviment)
+        setStorage()
     }
 
     const canBuyImproviment = (improviment) => {
@@ -162,6 +164,22 @@ export const Game = (container, Utils = utility) => {
         incrementScore(score, 'click')
     }
 
+    const createPetFromStorage = (pet) => {
+        const { name, type, improviments, score, width, height } = pet
+
+        const PetClass = PETS[type]
+
+        insertPet(
+            new PetClass(state, {
+                name,
+                type,
+                score,
+                improviments,
+                position: getUniqueRandomPosition(width, height)
+            })
+        )
+    }
+
     const improvimentesReduce = (points, improviment) => {
         if (improviment.type === 'catricio_fan') return points * improviment.increment
 
@@ -173,12 +191,39 @@ export const Game = (container, Utils = utility) => {
     const incrementScore = (score, type, dispatcher) => {
         state.score += score
         updateScore({ type, dispatcher, incrementedScore: score })
+        setStorage()
     }
 
     const updateScore = () => {
         const scoreElement = document.getElementById('points')
 
         scoreElement.innerHTML = Math.floor(state.score)
+    }
+
+    const setStorage = () => {
+        const gameState = {
+            improviments: state.improviments,
+            pets: state.pets.map((pet) => getPetToStorage(pet)),
+            score: state.score
+        }
+
+        localStorage.setItem('game-state', JSON.stringify(gameState))
+    }
+
+    const getStorageState = () => {
+        const storageState = JSON.parse(localStorage.getItem('game-state'))
+
+        if (!storageState) return
+
+        state.score = storageState.score
+        state.improviments = storageState.improviments
+        storageState.pets.forEach((pet) => createPetFromStorage(pet))
+    }
+
+    const getPetToStorage = (pet) => {
+        const { name, type, improviments, score, width, height } = pet.getInfo()
+
+        return { name, type, improviments, score, width, height }
     }
 
     const getPets = () => state.pets
@@ -266,6 +311,7 @@ export const Game = (container, Utils = utility) => {
     const init = () => {
         setState({ container })
         createSprites().then(() => {
+            getStorageState()
             setGameLayout()
             setCanvasContainer()
             createCanvas()
