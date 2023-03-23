@@ -1,4 +1,4 @@
-import { IMPROVIMENTS } from '../improviments'
+import { IMPROVIMENTS } from '../improvements'
 import { PETS } from '../pets/pets'
 import { Utils } from '../utils'
 
@@ -129,7 +129,7 @@ export const GameLayout = (gameInstance) => {
         $(`[data-pet-type="${pet.TYPE}"]`).closest('#shop-item').replaceWith(renderShopItem(pet))
     }
 
-    const updateImprovimentItem = (improviment) => {
+    const updateImprovementItem = (improviment) => {
         $(`[data-improviment-type="${improviment.type}"]`)
             .closest('#shop-item')
             .replaceWith(renderimprovimentsItem(improviment, true))
@@ -209,5 +209,5 @@ export const GameLayout = (gameInstance) => {
         `
     }
 
-    return { renderLayout, renderShop, updateShopItem, updateImprovimentItem }
+    return { renderLayout, renderShop, updateShopItem, updateImprovementItem }
 }

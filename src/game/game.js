@@ -1,6 +1,6 @@
 import { CATRICIO } from './catricio'
 import { GameLayout } from './components/gameLayout'
-import { IMPROVIMENTS } from './improviments'
+import { IMPROVIMENTS as IMPROVEMENTS } from './improvements'
 import { PETS } from './pets/pets'
 import { Utils as utility } from './utils'
 
@@ -130,18 +130,18 @@ export const Game = (container, Utils = utility) => {
         setStorage()
     }
 
-    const buyImproviment = (type) => {
-        const improviment = IMPROVIMENTS.find((improviment) => improviment.type === type)
+    const buyImprovement = (type) => {
+        const improviment = IMPROVEMENTS.find((improviment) => improviment.type === type)
 
-        if (canBuyImproviment(improviment)) return
+        if (canBuyImprovement(improviment)) return
 
         incrementScore(-improviment.price, 'buy')
         state.improviments.push({ ...improviment })
-        render.updateImprovimentItem(improviment)
+        render.updateImprovementItem(improviment)
         setStorage()
     }
 
-    const canBuyImproviment = (improviment) => {
+    const canBuyImprovement = (improviment) => {
         return (
             !improviment ||
             state.score < improviment.price ||
@@ -157,9 +157,9 @@ export const Game = (container, Utils = utility) => {
         state.pets.push(Pet)
     }
 
-    const dispachClick = () => {
+    const dispatchClick = () => {
         const improviments = state.improviments.filter(({ target }) => target === 'catricio')
-        const score = improviments.reduce((score, i) => improvimentesReduce(score, i), 1)
+        const score = improviments.reduce((score, i) => improvementsReduce(score, i), 1)
 
         incrementScore(score, 'click')
     }
@@ -180,7 +180,7 @@ export const Game = (container, Utils = utility) => {
         )
     }
 
-    const improvimentesReduce = (points, improviment) => {
+    const improvementsReduce = (points, improviment) => {
         if (improviment.type === 'catricio_fan') return points * improviment.increment
 
         if (improviment.type === 'pet_lover') return points + state.pets.length * improviment.increment
@@ -239,8 +239,8 @@ export const Game = (container, Utils = utility) => {
         state.resetFullScreen = resetFullScreen
         state.toggleShop = toggleShop
         state.shopIsOpen = shopIsOpen
-        state.buyImproviment = buyImproviment
-        state.dispachClick = dispachClick
+        state.buyImproviment = buyImprovement
+        state.dispachClick = dispatchClick
     }
 
     const setGameLayout = () => {
@@ -280,9 +280,9 @@ export const Game = (container, Utils = utility) => {
         await Promise.all(Object.entries(PETS).map(([key, Pet]) => createSprite(key, Pet)))
     }
 
-    const createimprovimentSprites = async () => {
+    const createImprovementSprites = async () => {
         await Promise.all(
-            IMPROVIMENTS.filter((improviment) => improviment.spritPath).map((improviment) =>
+            IMPROVEMENTS.filter((improviment) => improviment.spritPath).map((improviment) =>
                 createimprovimentSprite(improviment)
             )
         )
@@ -306,7 +306,7 @@ export const Game = (container, Utils = utility) => {
     }
 
     const createSprites = async () => {
-        await Promise.all([createPetSprites(), createCatricioSprites(), createimprovimentSprites()])
+        await Promise.all([createPetSprites(), createCatricioSprites(), createImprovementSprites()])
     }
 
     const init = () => {
