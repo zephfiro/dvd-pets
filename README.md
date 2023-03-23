@@ -10,4 +10,4 @@ Dvd Pets Game
 - execute `npm run dev`
 
 ### Testes
-- npm run test
+- execute `npm run test`
