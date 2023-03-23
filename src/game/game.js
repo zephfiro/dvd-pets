@@ -272,6 +272,7 @@ export const Game = (container, Utils = utility) => {
     const toggleShop = () => {
         const shop = document.getElementById('shop')
 
+        $('#pet-infos').toggle('hidden')
         shop.classList.toggle('hidden')
     }
 

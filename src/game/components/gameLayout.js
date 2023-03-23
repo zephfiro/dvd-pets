@@ -53,6 +53,18 @@ export const GameLayout = (gameInstance) => {
         `
     }
 
+    const renderOwnedPets = () => {
+        return gameInstance.pets
+            .map((pet) => {
+                return `
+                    <div class="pet-item">
+                        <img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />
+                    </div>
+                `
+            })
+            .join('')
+    }
+
     const renderLayout = () => {
         return `
             <div class="d-flex align-itens-center justify-content-center h-100 w-100 postion-relative">
@@ -65,6 +77,9 @@ export const GameLayout = (gameInstance) => {
                 <div id="canvas"></div>
                 <div id="pet-infos">
                     ${renderCard()}
+                    <div id="owned-pets">
+                        ${renderOwnedPets()}
+                    </div>
                 </div>
             </div>
         `
