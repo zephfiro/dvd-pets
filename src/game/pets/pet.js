@@ -9,6 +9,7 @@ export default class Pet {
     static SPRIT_LEFT_DIRECTION = -1
     static SPRIT_RIGHT_DIRECTION = 1
     static BONUS_MULTIPLIER = 100
+    static BONUS_MULTIPLIER_SPEED = 1.5
     static BASE_SPRITE_PATH = '/src/sprites/pets'
     static INCREMENT_PET_BUY = 0.2
 
@@ -127,10 +128,17 @@ export default class Pet {
 
     getIncrementSpeed() {
         const fpsMultiplier = 100 / this.gameInstance.fps
-        const incrementX = this.state.speed.x * this.state.direction.x * fpsMultiplier
-        const incrementY = this.state.speed.y * this.state.direction.y * fpsMultiplier
+        const bonusIncrementSpeed = this.getBonusIncrementSpeed()
+        const incrementX = this.state.speed.x * this.state.direction.x * fpsMultiplier * bonusIncrementSpeed
+        const incrementY = this.state.speed.y * this.state.direction.y * fpsMultiplier * bonusIncrementSpeed
 
         return { incrementX, incrementY }
+    }
+
+    getBonusIncrementSpeed() {
+        if (this.hasBonus()) return Pet.BONUS_MULTIPLIER_SPEED
+
+        return 1
     }
 
     createImageCanvas() {
@@ -166,12 +174,16 @@ export default class Pet {
     }
 
     render() {
-        if (this.collisionCount > 0 || this.state.improviments.some(({ type }) => type === 'bonus')) {
+        if (this.collisionCount > 0 || this.hasBonus()) {
             this.renderImage()
             this.applyColorFilter(this.getRandomColor())
         }
 
         this.gameCanvasInstance.ctx.drawImage(this.canvas, this.state.position.x, this.state.position.y)
+    }
+
+    hasBonus() {
+        return this.state.improviments.some(({ type }) => type === 'bonus')
     }
 
     getRandomColor() {
