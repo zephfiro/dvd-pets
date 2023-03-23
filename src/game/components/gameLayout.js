@@ -40,7 +40,9 @@ export const GameLayout = (gameInstance) => {
                     <div id="pet-photo">
                         ${
                             pet
-                                ? `<img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />`
+                                ? `<img draggable="false" src="${
+                                      gameInstance.sprites.pets[pet.state.type]?.url
+                                  }" />`
                                 : '???'
                         }
                     </div>
@@ -57,8 +59,8 @@ export const GameLayout = (gameInstance) => {
         return gameInstance.pets
             .map((pet) => {
                 return `
-                    <div class="pet-item">
-                        <img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />
+                    <div id="pet-item">
+                        <img draggable="false" src="${gameInstance.sprites.pets[pet.state.type].url}" />
                     </div>
                 `
             })
