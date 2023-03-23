@@ -17,7 +17,7 @@ export const GameLayout = (gameInstance) => {
     const catricio = () => {
         return `
             <div id="catricio">
-                <img class="grabbable" src="${gameInstance.sprites.catricio.default.url}" />
+                <img class="grabbable" draggable="false" src="${gameInstance.sprites.catricio.default.url}" />
                 <div id="name">
                     <span>Catricio</span>
                 </div>
@@ -103,6 +103,7 @@ export const GameLayout = (gameInstance) => {
                     <div class="card-body d-flex px-2">
                         <div class="shop-pet-img">
                             <img
+                                draggable="false"
                                 class="img-fluid"
                                 src="${gameInstance.sprites.pets[pet.TYPE].url}" />
                         </div>
@@ -148,7 +149,7 @@ export const GameLayout = (gameInstance) => {
                 <div class="card" data-improviment-type="${improviment.type}" title="Comprar">
                     <div class="card-body d-flex px-2">
                         <div class="shop-pet-img">
-                            <img class="img-fluid" src="${sprite.url}" />
+                            <img draggable="false" class="img-fluid" src="${sprite.url}" />
                         </div>
                         <div class="item-info d-flex flex-column w-100">
                             <div class="d-flex justify-content-between w-100 aling-items-center">

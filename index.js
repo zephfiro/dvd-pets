@@ -8,6 +8,22 @@ $('body').on('click', '#shop-button', () => game.toggleShop())
 
 $('body').on('click', '[data-pet-type]', ({ currentTarget }) => game.buyPet(currentTarget.dataset.petType))
 
+$('body').on('mousedown', '#catricio', ({ currentTarget }) => {
+    const img = currentTarget.querySelector('img')
+
+    img.src = game.sprites.catricio.grab.url
+})
+
+$('body').on('mouseup', ({ currentTarget }) => {
+    const img = document.querySelector('#catricio img')
+
+    img.src = game.sprites.catricio.default.url
+})
+
+$('body').on('click', '[data-improviment-type]', ({ currentTarget }) =>
+    game.buyImproviment(currentTarget.dataset.improvimentType)
+)
+
 $('body').on('mouseleave', () => {
     let timeout = setTimeout(() => game.changeToFullScreen(), 0)
 
@@ -27,21 +43,3 @@ $('body').on('click', '[data-nav]', ({ currentTarget }) => {
     $('[shop-nav-content]').addClass('d-none').removeClass('d-flex')
     $(`#${nav}`).removeClass('d-none').removeClass('d-flex')
 })
-
-$('body').on('mousedown', '#catricio', ({ currentTarget }) => {
-    const img = currentTarget.querySelector('img')
-
-    img.src = game.sprites.catricio.grab.url
-})
-
-$('body').on('mouseup', '#catricio', ({ currentTarget }) => {
-    const img = currentTarget.querySelector('img')
-
-    img.src = game.sprites.catricio.default.url
-})
-
-$('body').on('click', '[data-improviment-type]', ({ currentTarget }) => {
-    game.buyImproviment(currentTarget.dataset.improvimentType)
-})
-
-$('body').on('keyup', () => console.log(game))
