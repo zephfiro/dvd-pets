@@ -124,11 +124,12 @@ export const Game = (container, Utils = utility) => {
         if (!PetClass || state.score < price) return
 
         const alreadyHave = !!state.pets.find((pet) => pet.state.type === PetClass.TYPE)
-
-        if (!alreadyHave) $('#owned-pets').append(render.addOwnedPet(PetClass))
+        const Pet = new PetClass(state, { position: getUniqueRandomPosition(width, height) })
 
         incrementScore(-price, 'buy')
-        insertPet(new PetClass(state, { position: getUniqueRandomPosition(width, height) }))
+        insertPet(Pet)
+
+        if (!alreadyHave) $('#owned-pets').append(render.addOwnedPet(Pet))
 
         render.updateShopItem(PetClass)
         setStorage()

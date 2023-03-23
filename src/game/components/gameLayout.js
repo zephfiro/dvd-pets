@@ -53,9 +53,11 @@ export const GameLayout = (gameInstance) => {
                 }
             </div>
             <div id="pet-attributes">
-                <p id="pet-name">[${pet ? pet.state.name : 'seu pet aqui'}]</p>
+                <p id="pet-name">[${pet ? pet?.state?.name : 'seu pet aqui'}]</p>
                 <p id="pet-personal-stats">${
-                    pet.state.description ? pet.state.description : 'as informações do seu pet aparecerá aqui'
+                    pet?.state?.description
+                        ? pet?.state?.description
+                        : 'as informações do seu pet aparecerá aqui'
                 }</p>
             </div>
         `
@@ -81,8 +83,8 @@ export const GameLayout = (gameInstance) => {
 
     const addOwnedPet = (pet) => {
         return `
-            <div id="pet-item" data-id=${pet.state.id}>
-                <img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />
+            <div id="pet-item" data-id=${pet?.state?.id ?? ''}>
+                <img draggable="false" src="${gameInstance.sprites.pets[pet.state.type].url}" />
             </div>
         `
     }
