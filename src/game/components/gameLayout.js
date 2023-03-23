@@ -33,6 +33,26 @@ export const GameLayout = (gameInstance) => {
         `
     }
 
+    const renderCard = (pet = gameInstance.pets[0]) => {
+        return `
+            <div id="pet-card">
+                <div id="card">
+                    <div id="pet-photo">
+                        ${
+                            pet
+                                ? `<img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />`
+                                : '???'
+                        }
+                    </div>
+                    <div id="pet-attributes">
+                        <p id="pet-name">[seu pet aqui]</p>
+                        <p id="pet-personal-stats">as informações do seu pet aparecerá aqui</p>
+                    </div>
+                </div>
+            </div>
+        `
+    }
+
     const renderLayout = () => {
         return `
             <div class="d-flex align-itens-center justify-content-center h-100 w-100 postion-relative">
@@ -43,7 +63,9 @@ export const GameLayout = (gameInstance) => {
                     ${shop()}
                 </div>
                 <div id="canvas"></div>
-                <div id="pet-infos"></div>
+                <div id="pet-infos">
+                    ${renderCard()}
+                </div>
             </div>
         `
     }

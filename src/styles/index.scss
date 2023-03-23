@@ -126,7 +126,62 @@ body {
 #pet-infos {
     @extend %laterals;
 
-    left: 100%;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+    #pet-card {
+        width: 320px;
+        height: 371px;
+
+        background: rgba(192, 244, 255, 0.5);
+        border: 1px solid #9fffe2;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+        position: relative;
+
+        #card {
+            position: absolute;
+            width: 289px;
+            height: 336px;
+            left: 16px;
+            top: 14px;
+            padding: 1rem;
+
+            background: rgba(145, 200, 212, 0.42);
+            border: 1px solid #9fffe2;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 5px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            flex-flow: wrap;
+            align-content: space-between;
+
+            #pet-photo {
+            }
+
+            #pet-attributes {
+                @extend %scrollbar;
+
+                width: 256px;
+                height: 69px;
+                left: 33px;
+                top: 266px;
+
+                background: #f0fffe;
+                border-radius: 8px;
+                overflow-y: scroll;
+
+                #pet-name {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
 }
 
 #canvas {
