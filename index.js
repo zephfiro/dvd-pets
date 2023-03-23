@@ -43,3 +43,7 @@ $('body').on('click', '[data-nav]', ({ currentTarget }) => {
     $('[shop-nav-content]').addClass('d-none').removeClass('d-flex')
     $(`#${nav}`).removeClass('d-none').removeClass('d-flex')
 })
+
+$('body').on('click', '#pet-item', ({ currentTarget }) => {
+    game.changePetPreview(currentTarget.dataset.id)
+})

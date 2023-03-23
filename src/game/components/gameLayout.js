@@ -36,25 +36,27 @@ export const GameLayout = (gameInstance) => {
     const renderCard = (pet = gameInstance.pets[0]) => {
         return `
             <div id="pet-card">
-                <div id="card">
-                    <div id="pet-photo">
-                        ${
-                            pet
-                                ? `<img draggable="false" src="${
-                                      gameInstance.sprites.pets[pet.state.type]?.url
-                                  }" />`
-                                : '???'
-                        }
-                    </div>
-                    <div id="pet-attributes">
-                        <p id="pet-name">[${pet ? pet.state.name : 'seu pet aqui'}]</p>
-                        <p id="pet-personal-stats">${
-                            pet.state.description
-                                ? pet.state.description
-                                : 'as informações do seu pet aparecerá aqui'
-                        }</p>
-                    </div>
+                <div id="card-pet-info">
+                    ${renderCardInfo(pet)}
                 </div>
+            </div>
+        `
+    }
+
+    const renderCardInfo = (pet) => {
+        return `
+            <div id="pet-photo">
+                ${
+                    pet
+                        ? `<img draggable="false" src="${gameInstance.sprites.pets[pet.state.type]?.url}" />`
+                        : '???'
+                }
+            </div>
+            <div id="pet-attributes">
+                <p id="pet-name">[${pet ? pet.state.name : 'seu pet aqui'}]</p>
+                <p id="pet-personal-stats">${
+                    pet.state.description ? pet.state.description : 'as informações do seu pet aparecerá aqui'
+                }</p>
             </div>
         `
     }
@@ -69,7 +71,7 @@ export const GameLayout = (gameInstance) => {
             }, [])
             .map((pet) => {
                 return `
-                    <div id="pet-item">
+                    <div id="pet-item" data-id=${pet.state.id}>
                         <img draggable="false" src="${gameInstance.sprites.pets[pet.state.type].url}" />
                     </div>
                 `
@@ -79,7 +81,7 @@ export const GameLayout = (gameInstance) => {
 
     const addOwnedPet = (pet) => {
         return `
-            <div id="pet-item">
+            <div id="pet-item" data-id=${pet.state.id}>
                 <img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />
             </div>
         `
@@ -227,5 +229,5 @@ export const GameLayout = (gameInstance) => {
         `
     }
 
-    return { renderLayout, renderShop, updateShopItem, updateImprovementItem, addOwnedPet }
+    return { renderLayout, renderShop, updateShopItem, updateImprovementItem, addOwnedPet, renderCardInfo }
 }

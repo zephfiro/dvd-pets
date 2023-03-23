@@ -168,6 +168,16 @@ export const Game = (container, Utils = utility) => {
         incrementScore(score, 'click')
     }
 
+    const changePetPreview = (id) => {
+        const pet = state.pets.find((pet) => pet.state.id === id)
+
+        if (!pet) return
+
+        $('#card-pet-info').empty()
+
+        $('#card-pet-info').append(render.renderCardInfo(pet))
+    }
+
     const createPetFromStorage = (pet) => {
         const { name, type, improvements, score, width, height } = pet
 
@@ -245,6 +255,7 @@ export const Game = (container, Utils = utility) => {
         state.shopIsOpen = shopIsOpen
         state.buyImprovement = buyImprovement
         state.dispachClick = dispatchClick
+        state.changePetPreview = changePetPreview
     }
 
     const setGameLayout = () => {
