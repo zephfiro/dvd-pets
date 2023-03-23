@@ -57,6 +57,12 @@ export const GameLayout = (gameInstance) => {
 
     const renderOwnedPets = () => {
         return gameInstance.pets
+            .reduce((acc, pet) => {
+                const petIndex = acc.findIndex((p) => p.state.name === pet.state.name)
+                petIndex !== -1 ? acc[petIndex].count++ : acc.push({ ...pet, count: 1 })
+
+                return acc
+            }, [])
             .map((pet) => {
                 return `
                     <div id="pet-item">
