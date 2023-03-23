@@ -244,7 +244,7 @@ export const Game = (container, Utils = utility) => {
         state.toggleShop = toggleShop
         state.shopIsOpen = shopIsOpen
         state.buyImprovement = buyImprovement
-        state.dispachClick = dispatchClick
+        state.dispatchClick = dispatchClick
     }
 
     const setGameLayout = () => {
