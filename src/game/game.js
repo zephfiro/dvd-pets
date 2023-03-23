@@ -121,7 +121,7 @@ export const Game = (container, Utils = utility) => {
         const width = state.canvasState.width - state.sprites.pets[type].width
         const height = state.canvasState.height - state.sprites.pets[type].height
 
-        if (!PetClass || state.score < PetClass.PRICE) return
+        if (!PetClass || state.score < price) return
 
         incrementScore(-price, 'buy')
         insertPet(new PetClass(state, { position: getUniqueRandomPosition(width, height) }))
