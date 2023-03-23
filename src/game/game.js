@@ -256,6 +256,7 @@ export const Game = (container, Utils = utility) => {
         state.buyImprovement = buyImprovement
         state.dispachClick = dispatchClick
         state.changePetPreview = changePetPreview
+        state.dispatchClick = dispatchClick
     }
 
     const setGameLayout = () => {

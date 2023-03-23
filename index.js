@@ -2,7 +2,7 @@ import { Game } from './src/game/game'
 
 const game = Game(document.getElementById('app'))
 
-$('body').on('click', '#catricio', () => game.dispachClick(1, 'normal'))
+$('body').on('click', '#catricio', () => game.dispatchClick(1, 'normal'))
 
 $('body').on('click', '#shop-button', () => game.toggleShop())
 

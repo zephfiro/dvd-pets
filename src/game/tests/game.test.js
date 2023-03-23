@@ -1,8 +1,22 @@
-import { expect, it, describe } from '@jest/globals'
+import { expect, it, describe, jest, beforeEach } from '@jest/globals'
 import { Game } from '../game'
 
 describe('Game', () => {
-    it('should initialize with default state', () => {
+    beforeEach(() => {
+        const mockGameLayout = jest.fn(() => {
+            return {
+                renderLayout: jest.fn(() => '<div style="width: 100px; height: 100px" id="canvas"></div>')
+            }
+        })
+
+        jest.mock('../game', () => {
+            return {
+                GameLayout: mockGameLayout
+            }
+        })
+    })
+
+    it('should initialized state', () => {
         const container = document.createElement('div')
         const game = Game(container)
 
