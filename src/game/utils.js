@@ -51,9 +51,10 @@ export const Utils = () => {
     const roundUp = (number) => Math.ceil(Math.round(number * 100)) / 100
 
     const getPetPrice = (pets, pet) => {
-        const increment = filterPetsByType(pets, pet.TYPE).length * pet.INCREMENT_PET_BUY
+        const multiplier = pet.INCREMENT_PET_BUY + 1
+        const price = filterPetsByType(pets, pet.TYPE).reduce((acc) => multiplier * acc, pet.PRICE)
 
-        return Math.floor(roundUp(pet.PRICE * increment + pet.PRICE))
+        return Math.floor(roundUp(price))
     }
 
     const sortByAsc = (a, b) => {

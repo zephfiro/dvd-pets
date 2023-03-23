@@ -5,11 +5,11 @@ import { Utils } from '../utils'
 export const GameLayout = (gameInstance) => {
     const utils = Utils()
 
-    const score = (points = 0) => {
+    const score = () => {
         return `
             <div id="score">
-                <span id="points">${gameInstance.score}</span>
-                <span id="loves-per-second">${points} loves per second</span>
+                <span class="text-danger" id="points">${gameInstance.score}</span>
+                <h5 class="text-dark font-wight-bold" id="loves">Loves❤️</h5>
             </div>
         `
     }
