@@ -13,6 +13,7 @@ export default class Bananamster extends Pet {
         const defaultParams = {
             ...params,
             name: 'Bananhamster',
+            description: 'igual a todas as bananas do mundo',
             type: Bananamster.TYPE,
             spriteDirection: Pet.SPRIT_LEFT_DIRECTION,
             spritePath: Bananamster.SPRITE_PATH,

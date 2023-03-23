@@ -10,6 +10,7 @@ export default class Catomato extends Pet {
         const defaultParams = {
             ...params,
             name: 'Catomato',
+            description: 'um lindo gatinho em formato de tomate, muito poderoso',
             type: Catomato.TYPE,
             spriteDirection: Pet.SPRIT_LEFT_DIRECTION,
             spritePath: Catomato.SPRITE_PATH
@@ -19,22 +20,22 @@ export default class Catomato extends Pet {
     }
 
     getIncrementSpeed() {
-        const improviments = this.gameInstance.improviments
+        const improvements = this.gameInstance.improvements
         const { incrementX, incrementY } = super.getIncrementSpeed()
-        const bonusIncrement = improviments.reduce((acc, i) => this.getBonusIncrement(i) * acc, 1)
+        const bonusIncrement = improvements.reduce((acc, i) => this.getBonusIncrement(i) * acc, 1)
 
         return { incrementX: incrementX * bonusIncrement, incrementY: incrementY * bonusIncrement }
     }
 
-    getBonusIncrement(improviment) {
-        if (improviment.type === 'tomato_ball') return improviment.increment
+    getBonusIncrement(improvement) {
+        if (improvement.type === 'tomato_ball') return improvement.increment
 
         return 1
     }
 
     getBonusScoreIncrement() {
-        const improviments = this.gameInstance.improviments
-        const bonusIncrement = improviments.reduce(
+        const improvements = this.gameInstance.improvements
+        const bonusIncrement = improvements.reduce(
             (acc, i) => this.getBonusScore(i) * acc,
             super.getBonusScoreIncrement()
         )
@@ -42,13 +43,13 @@ export default class Catomato extends Pet {
         return bonusIncrement
     }
 
-    getBonusScore(improviment) {
-        if (improviment?.type === 'tomato_rice') return improviment.increment
+    getBonusScore(improvement) {
+        if (improvement?.type === 'tomato_rice') return improvement.increment
 
-        if (improviment?.type === 'tomato_toy') {
+        if (improvement?.type === 'tomato_toy') {
             const catomatos = this.gameInstance.pets.filter((p) => p.state.type === 'catomato')
 
-            return improviment.increment * catomatos.length
+            return improvement.increment * catomatos.length
         }
 
         return 1
