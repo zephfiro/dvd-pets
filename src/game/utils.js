@@ -14,12 +14,16 @@ export const Utils = () => {
 
     const getRandomPosition = (width, height) => ({ x: Math.random() * width, y: Math.random() * height })
 
-    const createSprite = async (path, width, height) => {
+    const createSprite = async (path) => {
         return new Promise((resolve, reject) => {
-            fetch(path)
-                .then((response) => response.blob())
-                .then((blob) => createBitmapImage(blob, width, height))
-                .then((bitmapImage) => {
+            const img = new Image()
+
+            img.src = path
+            img.onload = () => {
+                const width = img.naturalWidth * 5
+                const height = img.naturalHeight * 5
+
+                createBitmapImage(img, width, height).then((bitmapImage) => {
                     const canvas = document.createElement('canvas')
                     const ctx = canvas.getContext('bitmaprenderer')
 
@@ -27,14 +31,15 @@ export const Utils = () => {
                     canvas.height = bitmapImage.height
 
                     ctx.transferFromImageBitmap(bitmapImage)
-                    canvas.toBlob(resolve)
+                    canvas.toBlob((blob) => resolve({ blob, width, height, url: URL.createObjectURL(blob) }))
                 })
-                .catch(reject)
+            }
+            img.onerror = reject
         })
     }
 
-    const createBitmapImage = async (blob, width, height) => {
-        return await createImageBitmap(blob, {
+    const createBitmapImage = async (img, width, height) => {
+        return await createImageBitmap(img, {
             resizeWidth: width,
             resizeHeight: height,
             resizeQuality: 'pixelated'
@@ -43,6 +48,21 @@ export const Utils = () => {
 
     const filterPetsByType = (pets, type) => pets.filter((pet) => pet.state.type === type)
 
+    const roundUp = (number) => Math.ceil(Math.round(number * 100)) / 100
+
+    const getPetPrice = (pets, pet) => {
+        const increment = filterPetsByType(pets, pet.TYPE).length * pet.INCREMENT_PET_BUY
+
+        return Math.floor(roundUp(pet.PRICE * increment + pet.PRICE))
+    }
+
+    const sortByAsc = (a, b) => {
+        if (a > b) return 1
+        if (a < b) return -1
+
+        return 0
+    }
+
     return {
         randomFlip,
         uuid,
@@ -50,6 +70,9 @@ export const Utils = () => {
         getRandomPosition,
         createBitmapImage,
         createSprite,
-        filterPetsByType
+        filterPetsByType,
+        roundUp,
+        getPetPrice,
+        sortByAsc
     }
 }

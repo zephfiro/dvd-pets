@@ -8,9 +8,9 @@ export default class Pet {
     static DEFAULT_SCORE_INCREMENT = 1
     static SPRIT_LEFT_DIRECTION = -1
     static SPRIT_RIGHT_DIRECTION = 1
-    static BONUS_MULTIPLIER = 10
-    static BASE_SPRITE_PATH = '/src/sprites'
-    static INCREMENT_PET_BUY = 0.4
+    static BONUS_MULTIPLIER = 100
+    static BASE_SPRITE_PATH = '/src/sprites/pets'
+    static INCREMENT_PET_BUY = 0.2
 
     constructor(gameInstance, stateParams, utils = Utils) {
         this.utils = utils()
@@ -40,7 +40,8 @@ export default class Pet {
         position: { x: 0, y: 0 },
         speed: { x: 0, y: 0 },
         score: 0,
-        spriteDirection: null
+        spriteDirection: null,
+        improviments: []
     }
 
     setInitialState({
@@ -63,9 +64,9 @@ export default class Pet {
             bonusMultiplier: Pet.BONUS_MULTIPLIER,
             speed: this.getSpeed(speed),
             direction: { x: this.utils.randomFlip(1, -1), y: this.utils.randomFlip(1, -1) },
-            width: width ?? Pet.DEFAULT_WIDTH,
-            height: height ?? Pet.DEFAULT_HEIGHT,
-            sprite: sprite ?? this.gameInstance.sprites[type],
+            width: width ?? this.gameInstance.sprites.pets[type].width,
+            height: height ?? this.gameInstance.sprites.pets[type].height,
+            sprite: sprite ?? this.gameInstance.sprites.pets[type].blob,
             position: this.getPosition(position),
             spriteDirection: spriteDirection ?? null,
             spritePath
@@ -106,16 +107,25 @@ export default class Pet {
 
         this.incrementPosition()
         this.checkCollision()
+        this.dispachScore()
         this.render()
 
         this.collisionCount = 0
     }
 
     incrementPosition() {
-        const fpsMultiplier = 100 / this.gameInstance.fps
+        const { incrementX, incrementY } = this.getIncrementSpeed()
 
-        this.state.position.x += this.state.speed.x * this.state.direction.x * fpsMultiplier
-        this.state.position.y += this.state.speed.y * this.state.direction.y * fpsMultiplier
+        this.state.position.x += incrementX
+        this.state.position.y += incrementY
+    }
+
+    getIncrementSpeed() {
+        const fpsMultiplier = 100 / this.gameInstance.fps
+        const incrementX = this.state.speed.x * this.state.direction.x * fpsMultiplier
+        const incrementY = this.state.speed.y * this.state.direction.y * fpsMultiplier
+
+        return { incrementX, incrementY }
     }
 
     createImageCanvas() {
@@ -151,7 +161,7 @@ export default class Pet {
     }
 
     render() {
-        if (this.collisionCount > 0) {
+        if (this.collisionCount > 0 || this.state.improviments.some(({ type }) => type === 'bonus')) {
             this.renderImage()
             this.applyColorFilter(this.getRandomColor())
         }
@@ -211,6 +221,36 @@ export default class Pet {
         this.gameInstance.pets = this.gameInstance.pets.filter((pet) => pet.state.id !== this.state.id)
     }
 
+    dispachScore() {
+        if (this.collisionCount === 1) {
+            const score = this.utils.roundUp(this.state.scoreIncrement * this.getBonusScoreIncrement())
+
+            this.gameInstance.incrementScore(score, 'pet', this.state)
+            this.state.score += score
+        }
+
+        if (this.collisionCount === 2) {
+            const bonus = this.getBonusScoreIncrement()
+            const score = this.utils.roundUp(this.state.scoreIncrement * this.state.bonusMultiplier * bonus)
+
+            this.gameInstance.incrementScore(score, 'pet', this.state)
+            this.state.score += score
+            this.setSpecialBonus()
+        }
+    }
+
+    setSpecialBonus() {
+        const improviment = { time: 10000, increment: 10, type: 'bonus' }
+
+        this.state.improviments.push(improviment)
+
+        setTimeout(() => this.state.improviments.shift(), improviment.time)
+    }
+
+    getBonusScoreIncrement() {
+        return this.state.improviments.reduce((acc, improviment) => acc * improviment.increment, 1)
+    }
+
     checkCollision() {
         const { x, y } = this.state.position
         const { width, height } = this.state
@@ -242,18 +282,6 @@ export default class Pet {
             this.state.direction.y *= -1 // Inverte a direção vertical
             this.state.position.y = 0 // Define a posição da imagem para dentro do canvas
             this.collisionCount++
-        }
-
-        if (this.collisionCount === 1) {
-            this.gameInstance.incrementScore(this.state.scoreIncrement, 'normal', this.state)
-            this.state.score += this.state.scoreIncrement
-        }
-
-        if (this.collisionCount === 2) {
-            const score = this.state.scoreIncrement * this.state.bonusMultiplier
-
-            this.gameInstance.incrementScore(score, 'bonus', this.state)
-            this.state.score += score
         }
     }
 }

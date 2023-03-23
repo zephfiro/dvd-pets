@@ -1,24 +1,32 @@
+import { CATRICIO } from './catricio'
 import { GameLayout } from './components/gameLayout'
+import { IMPROVIMENTS } from './improviments'
 import { PETS } from './pets/pets'
 import { Utils as utility } from './utils'
 
 export const Game = (container, Utils = utility) => {
-    const utils = Utils()
     const state = {
+        fps: 75,
         pets: [],
         score: 0,
-        fps: 75,
         container: null,
-        sprites: {},
+        improviments: [],
+        sprites: {
+            pets: {},
+            catricio: {},
+            improviments: {}
+        },
         canvasState: {
             width: 0,
             height: 0,
+            ctx: null,
             canvas: null,
             container: null,
-            ctx: null,
             backgroundColor: '#000000'
         }
     }
+    const utils = Utils()
+    const render = GameLayout(state)
 
     const setState = (newState) => {
         Object.assign(state, newState)
@@ -88,28 +96,55 @@ export const Game = (container, Utils = utility) => {
         }).observe(state.canvasState.container)
     }
 
-    const getUniqueRandomPosition = () => {
-        const { x, y } = utils.getRandomPosition(state.canvasState.width, state.canvasState.height)
+    const getUniqueRandomPosition = (width, height) => {
+        const { x, y } = utils.getRandomPosition(width, height)
 
         const hasPosition = state.pets.some(({ state }) => state.position.x === x && state.position.y === y)
 
-        if (hasPosition) return getUniqueRandomPosition()
+        if (hasPosition) return getUniqueRandomPosition(width, height)
 
         return { x, y }
     }
 
     const updatePetsPosition = () => {
-        state.pets.forEach((pet) => pet.setPosition(getUniqueRandomPosition()))
+        state.pets.forEach((pet) => {
+            const width = state.canvasState.width - state.sprites[pet.state.type].width
+            const height = state.canvasState.height - state.sprites[pet.state.type].height
+
+            pet.setPosition(getUniqueRandomPosition(width, height))
+        })
     }
 
     const buyPet = (type) => {
         const PetClass = PETS[type]
+        const price = utils.getPetPrice(state.pets, PetClass)
+        const width = state.canvasState.width - state.sprites.pets[type].width
+        const height = state.canvasState.height - state.sprites.pets[type].height
 
-        // if (!PetClass || state.score < PetClass.PRICE) return
+        if (!PetClass || state.score < PetClass.PRICE) return
 
-        incrementScore(-PetClass.PRICE, 'buy')
-        insertPet(new PetClass(state, { position: getUniqueRandomPosition() }))
-        $('#shop').after(state.render.renderShop(false)).remove()
+        incrementScore(-price, 'buy')
+        insertPet(new PetClass(state, { position: getUniqueRandomPosition(width, height) }))
+
+        render.updateShopItem(PetClass)
+    }
+
+    const buyImproviment = (type) => {
+        const improviment = IMPROVIMENTS.find((improviment) => improviment.type === type)
+
+        if (canBuyImproviment(improviment)) return
+
+        incrementScore(-improviment.price, 'buy')
+        state.improviments.push({ ...improviment })
+        render.updateImprovimentItem(improviment)
+    }
+
+    const canBuyImproviment = (improviment) => {
+        return (
+            !improviment ||
+            state.score < improviment.price ||
+            state.improviments.some(({ type }) => improviment.type === type)
+        )
     }
 
     const insertPet = (Pet) => {
@@ -120,15 +155,30 @@ export const Game = (container, Utils = utility) => {
         state.pets.push(Pet)
     }
 
-    const incrementScore = (score, type, dispatcher) => {
-        state.score += score
-        dispatchScore({ type, dispatcher, incrementedScore: score })
+    const dispachClick = () => {
+        const improviments = state.improviments.filter(({ target }) => target === 'catricio')
+        const score = improviments.reduce((score, i) => improvimentesReduce(score, i), 1)
+
+        incrementScore(score, 'click')
     }
 
-    const dispatchScore = ({ type, dispatcher, incrementedScore }) => {
+    const improvimentesReduce = (points, improviment) => {
+        if (improviment.type === 'catricio_fan') return points * improviment.increment
+
+        if (improviment.type === 'pet_lover') return points + state.pets.length * improviment.increment
+
+        return points
+    }
+
+    const incrementScore = (score, type, dispatcher) => {
+        state.score += score
+        updateScore({ type, dispatcher, incrementedScore: score })
+    }
+
+    const updateScore = () => {
         const scoreElement = document.getElementById('points')
 
-        scoreElement.innerHTML = state.score
+        scoreElement.innerHTML = Math.floor(state.score)
     }
 
     const getPets = () => state.pets
@@ -144,12 +194,12 @@ export const Game = (container, Utils = utility) => {
         state.resetFullScreen = resetFullScreen
         state.toggleShop = toggleShop
         state.shopIsOpen = shopIsOpen
+        state.buyImproviment = buyImproviment
+        state.dispachClick = dispachClick
     }
 
     const setGameLayout = () => {
-        state.render = GameLayout(state)
-
-        state.container.innerHTML = state.render.renderLayout()
+        state.container.innerHTML = render.renderLayout()
     }
 
     const changeToFullScreen = () => {
@@ -180,16 +230,37 @@ export const Game = (container, Utils = utility) => {
         shop.classList.toggle('hidden')
     }
 
-    const createSprites = async () => {
+    const createPetSprites = async () => {
         await Promise.all(Object.entries(PETS).map(([key, Pet]) => createSprite(key, Pet)))
     }
 
-    const createSprite = async (key, Pet) => {
-        const width = Pet.DEFAULT_WIDTH
-        const height = Pet.DEFAULT_HEIGHT
-        const path = Pet.SPRITE_PATH
+    const createimprovimentSprites = async () => {
+        await Promise.all(
+            IMPROVIMENTS.filter((improviment) => improviment.spritPath).map((improviment) =>
+                createimprovimentSprite(improviment)
+            )
+        )
+    }
 
-        return await utils.createSprite(path, width, height).then((sprite) => (state.sprites[key] = sprite))
+    const createimprovimentSprite = async (improviment) => {
+        return await utils
+            .createSprite(improviment.spritPath)
+            .then((sprite) => (state.sprites.improviments[improviment.type] = sprite))
+    }
+
+    const createCatricioSprites = async () => {
+        await Promise.all(Object.entries(CATRICIO).map(([key, path]) => createCatricioSprite(key, path)))
+    }
+
+    const createCatricioSprite = async (key, path) => {
+        return await utils.createSprite(path).then((sprite) => (state.sprites.catricio[key] = sprite))
+    }
+    const createSprite = async (key, Pet) => {
+        return await utils.createSprite(Pet.SPRITE_PATH).then((sprite) => (state.sprites.pets[key] = sprite))
+    }
+
+    const createSprites = async () => {
+        await Promise.all([createPetSprites(), createCatricioSprites(), createimprovimentSprites()])
     }
 
     const init = () => {
