@@ -47,7 +47,7 @@ export const GameLayout = (gameInstance) => {
                         }
                     </div>
                     <div id="pet-attributes">
-                        <p id="pet-name">[seu pet aqui]</p>
+                        <p id="pet-name">[${pet ? pet.state.name : 'seu pet aqui'}]</p>
                         <p id="pet-personal-stats">as informações do seu pet aparecerá aqui</p>
                     </div>
                 </div>
