@@ -20,8 +20,8 @@ $('body').on('mouseup', () => {
     img.src = game.sprites.catricio.default.url
 })
 
-$('body').on('click', '[data-improviment-type]', ({ currentTarget }) =>
-    game.buyImproviment(currentTarget.dataset.improvimentType)
+$('body').on('click', '[data-improvement-type]', ({ currentTarget }) =>
+    game.buyImprovement(currentTarget.dataset.improvementType)
 )
 
 $('body').on('mouseleave', () => {

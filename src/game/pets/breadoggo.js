@@ -21,22 +21,22 @@ export default class Breadoggo extends Pet {
     }
 
     getIncrementSpeed() {
-        const improviments = this.gameInstance.improviments
+        const improvements = this.gameInstance.improvements
         const { incrementX, incrementY } = super.getIncrementSpeed()
-        const bonusIncrement = improviments.reduce((acc, i) => this.getBonusIncrement(i) * acc, 1)
+        const bonusIncrement = improvements.reduce((acc, i) => this.getBonusIncrement(i) * acc, 1)
 
         return { incrementX: incrementX * bonusIncrement, incrementY: incrementY * bonusIncrement }
     }
 
-    getBonusIncrement(improviment) {
-        if (improviment.type === 'buttery_bone') return improviment.increment
+    getBonusIncrement(improvement) {
+        if (improvement.type === 'buttery_bone') return improvement.increment
 
         return 1
     }
 
     getBonusScoreIncrement() {
-        const improviments = this.gameInstance.improviments
-        const bonusIncrement = improviments.reduce(
+        const improvements = this.gameInstance.improvements
+        const bonusIncrement = improvements.reduce(
             (acc, i) => this.getBonusScore(i) * acc,
             super.getBonusScoreIncrement()
         )
@@ -44,8 +44,8 @@ export default class Breadoggo extends Pet {
         return bonusIncrement
     }
 
-    getBonusScore(improviment) {
-        if (improviment?.type === 'butter') return improviment.increment
+    getBonusScore(improvement) {
+        if (improvement?.type === 'butter') return improvement.increment
 
         return 1
     }
