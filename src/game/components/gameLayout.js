@@ -48,7 +48,11 @@ export const GameLayout = (gameInstance) => {
                     </div>
                     <div id="pet-attributes">
                         <p id="pet-name">[${pet ? pet.state.name : 'seu pet aqui'}]</p>
-                        <p id="pet-personal-stats">as informações do seu pet aparecerá aqui</p>
+                        <p id="pet-personal-stats">${
+                            pet.state.description
+                                ? pet.state.description
+                                : 'as informações do seu pet aparecerá aqui'
+                        }</p>
                     </div>
                 </div>
             </div>
@@ -71,6 +75,14 @@ export const GameLayout = (gameInstance) => {
                 `
             })
             .join('')
+    }
+
+    const addOwnedPet = (pet) => {
+        return `
+            <div id="pet-item">
+                <img draggable="false" src="${gameInstance.sprites.pets[pet.TYPE].url}" />
+            </div>
+        `
     }
 
     const renderLayout = () => {
@@ -176,7 +188,6 @@ export const GameLayout = (gameInstance) => {
     const renderImprovements = () => {
         return IMPROVEMENTS.sort((a, b) => utils.sortByAsc(a.price, b.price))
             .map((improvement) => {
-                console.log(gameInstance)
                 const isDisabled = gameInstance.improvements.some(({ type }) => type === improvement.type)
 
                 return renderImprovementsItem(improvement, isDisabled)
@@ -216,5 +227,5 @@ export const GameLayout = (gameInstance) => {
         `
     }
 
-    return { renderLayout, renderShop, updateShopItem, updateImprovementItem }
+    return { renderLayout, renderShop, updateShopItem, updateImprovementItem, addOwnedPet }
 }

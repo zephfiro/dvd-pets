@@ -43,7 +43,8 @@ export default class Pet {
         speed: { x: 0, y: 0 },
         score: 0,
         spriteDirection: null,
-        improvements: []
+        improvements: [],
+        description: ''
     }
 
     setInitialState({
@@ -58,7 +59,8 @@ export default class Pet {
         sprite,
         spritePath,
         improvements,
-        score
+        score,
+        description
     }) {
         Object.assign(this.state, {
             name,
@@ -75,7 +77,8 @@ export default class Pet {
             spriteDirection: spriteDirection ?? null,
             spritePath,
             improvements: improvements ?? [],
-            score: score ?? 0
+            score: score ?? 0,
+            description: description ?? ''
         })
     }
 

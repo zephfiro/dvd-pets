@@ -13,6 +13,7 @@ export default class Dripturtle extends Pet {
         const defaultParams = {
             ...params,
             name: 'Dripturtle',
+            description: 'uma tartaruga muito ameaçadora, que drip!',
             type: Dripturtle.TYPE,
             spriteDirection: Pet.SPRIT_LEFT_DIRECTION,
             spritePath: Dripturtle.SPRITE_PATH,

@@ -11,6 +11,7 @@ export default class Breadoggo extends Pet {
         const defaultParams = {
             ...params,
             name: 'DogPao',
+            description: 'um lindo pao em formato de sabor cachorro, muito delicioso',
             type: Breadoggo.TYPE,
             spriteDirection: Pet.SPRIT_LEFT_DIRECTION,
             spritePath: Breadoggo.SPRITE_PATH,

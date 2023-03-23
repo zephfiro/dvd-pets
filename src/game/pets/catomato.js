@@ -10,6 +10,7 @@ export default class Catomato extends Pet {
         const defaultParams = {
             ...params,
             name: 'Catomato',
+            description: 'um lindo gatinho em formato de tomate, muito poderoso',
             type: Catomato.TYPE,
             spriteDirection: Pet.SPRIT_LEFT_DIRECTION,
             spritePath: Catomato.SPRITE_PATH
