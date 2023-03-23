@@ -14,7 +14,7 @@ $('body').on('mousedown', '#catricio', ({ currentTarget }) => {
     img.src = game.sprites.catricio.grab.url
 })
 
-$('body').on('mouseup', ({ currentTarget }) => {
+$('body').on('mouseup', () => {
     const img = document.querySelector('#catricio img')
 
     img.src = game.sprites.catricio.default.url
@@ -25,7 +25,7 @@ $('body').on('click', '[data-improviment-type]', ({ currentTarget }) =>
 )
 
 $('body').on('mouseleave', () => {
-    let timeout = setTimeout(() => game.changeToFullScreen(), 0)
+    let timeout = setTimeout(() => game.changeToFullScreen(), 1000 * 10)
 
     $('body').on('mouseenter', () => {
         clearTimeout(timeout)
