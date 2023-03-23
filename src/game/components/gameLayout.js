@@ -1,4 +1,4 @@
-import { IMPROVIMENTS } from '../improvements'
+import { IMPROVEMENTS } from '../improvements'
 import { PETS } from '../pets/pets'
 import { Utils } from '../utils'
 
@@ -101,7 +101,7 @@ export const GameLayout = (gameInstance) => {
                         <div class="nav-link active" data-nav="pets">PETS</div>
                     </li>
                     <li class="nav-item">
-                        <div class="nav-link" data-nav="improviments">Melhorias</div>
+                        <div class="nav-link" data-nav="improvements">Melhorias</div>
                     </li>
                 </ul>
 
@@ -116,8 +116,8 @@ export const GameLayout = (gameInstance) => {
                 <div shop-nav-content id="pets" class="d-flex flex-column">
                     ${renderShopItems()}
                 </div>
-                <div shop-nav-content id="improviments" class="d-none flex-column">
-                    ${renderimproviments()}
+                <div shop-nav-content id="improvements" class="d-none flex-column">
+                    ${renderImprovements()}
                 </div>
             </div>
         `
@@ -135,10 +135,10 @@ export const GameLayout = (gameInstance) => {
         $(`[data-pet-type="${pet.TYPE}"]`).closest('#shop-item').replaceWith(renderShopItem(pet))
     }
 
-    const updateImprovementItem = (improviment) => {
-        $(`[data-improviment-type="${improviment.type}"]`)
+    const updateImprovementItem = (improvement) => {
+        $(`[data-improvement-type="${improvement.type}"]`)
             .closest('#shop-item')
-            .replaceWith(renderimprovimentsItem(improviment, true))
+            .replaceWith(renderImprovementsItem(improvement, true))
     }
 
     const renderShopItem = (pet) => {
@@ -173,25 +173,26 @@ export const GameLayout = (gameInstance) => {
         `
     }
 
-    const renderimproviments = () => {
-        return IMPROVIMENTS.sort((a, b) => utils.sortByAsc(a.price, b.price))
-            .map((improviment) => {
-                const isDisabled = gameInstance.improviments.some(({ type }) => type === improviment.type)
+    const renderImprovements = () => {
+        return IMPROVEMENTS.sort((a, b) => utils.sortByAsc(a.price, b.price))
+            .map((improvement) => {
+                console.log(gameInstance)
+                const isDisabled = gameInstance.improvements.some(({ type }) => type === improvement.type)
 
-                return renderimprovimentsItem(improviment, isDisabled)
+                return renderImprovementsItem(improvement, isDisabled)
             })
             .join('')
     }
 
-    const renderimprovimentsItem = (improviment, disabled = false) => {
+    const renderImprovementsItem = (improvement, disabled = false) => {
         const sprite =
-            improviment.target === 'catricio'
+            improvement.target === 'catricio'
                 ? gameInstance.sprites.catricio.default
-                : gameInstance.sprites.improviments[improviment.type]
+                : gameInstance.sprites.improvements[improvement.type]
 
         return `
             <div id="shop-item" class="${disabled ? 'disabled' : ''}">
-                <div class="card" data-improviment-type="${improviment.type}" title="Comprar">
+                <div class="card" data-improvement-type="${improvement.type}" title="Comprar">
                     <div class="card-body d-flex px-2">
                         <div class="shop-pet-img">
                             <img draggable="false" class="img-fluid" src="${sprite.url}" />
@@ -199,14 +200,14 @@ export const GameLayout = (gameInstance) => {
                         <div class="item-info d-flex flex-column w-100">
                             <div class="d-flex justify-content-between w-100 aling-items-center">
                                 <div id="shop-item-name">
-                                    <h4 class="mb-0">${improviment.name}</h4>
+                                    <h4 class="mb-0">${improvement.name}</h4>
                                 </div>
                                 <div id="shop-item-price" class="text-danger">
-                                    <span>${improviment.price}❤️</span>
+                                    <span>${improvement.price}❤️</span>
                                 </div>
                             </div>
                             <small class="colision-info font-wight-bold mt-1">
-                               ${improviment.description}
+                               ${improvement.description}
                             </small>
                         </div>
                     </div>

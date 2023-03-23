@@ -1,6 +1,6 @@
 import { CATRICIO } from './catricio'
 import { GameLayout } from './components/gameLayout'
-import { IMPROVIMENTS as IMPROVEMENTS } from './improvements'
+import { IMPROVEMENTS } from './improvements'
 import { PETS } from './pets/pets'
 import { Utils as utility } from './utils'
 
@@ -10,11 +10,11 @@ export const Game = (container, Utils = utility) => {
         pets: [],
         score: 0,
         container: null,
-        improviments: [],
+        improvements: [],
         sprites: {
             pets: {},
             catricio: {},
-            improviments: {}
+            improvements: {}
         },
         canvasState: {
             width: 0,
@@ -131,21 +131,21 @@ export const Game = (container, Utils = utility) => {
     }
 
     const buyImprovement = (type) => {
-        const improviment = IMPROVEMENTS.find((improviment) => improviment.type === type)
+        const improvement = IMPROVEMENTS.find((improvement) => improvement.type === type)
 
-        if (canBuyImprovement(improviment)) return
+        if (canBuyImprovement(improvement)) return
 
-        incrementScore(-improviment.price, 'buy')
-        state.improviments.push({ ...improviment })
-        render.updateImprovementItem(improviment)
+        incrementScore(-improvement.price, 'buy')
+        state.improvements.push({ ...improvement })
+        render.updateImprovementItem(improvement)
         setStorage()
     }
 
-    const canBuyImprovement = (improviment) => {
+    const canBuyImprovement = (improvement) => {
         return (
-            !improviment ||
-            state.score < improviment.price ||
-            state.improviments.some(({ type }) => improviment.type === type)
+            !improvement ||
+            state.score < improvement.price ||
+            state.improvements.some(({ type }) => improvement.type === type)
         )
     }
 
@@ -158,14 +158,14 @@ export const Game = (container, Utils = utility) => {
     }
 
     const dispatchClick = () => {
-        const improviments = state.improviments.filter(({ target }) => target === 'catricio')
-        const score = improviments.reduce((score, i) => improvementsReduce(score, i), 1)
+        const improvements = state.improvements.filter(({ target }) => target === 'catricio')
+        const score = improvements.reduce((score, i) => improvementsReduce(score, i), 1)
 
         incrementScore(score, 'click')
     }
 
     const createPetFromStorage = (pet) => {
-        const { name, type, improviments, score, width, height } = pet
+        const { name, type, improvements, score, width, height } = pet
 
         const PetClass = PETS[type]
 
@@ -174,16 +174,16 @@ export const Game = (container, Utils = utility) => {
                 name,
                 type,
                 score,
-                improviments,
+                improvements,
                 position: getUniqueRandomPosition(width, height)
             })
         )
     }
 
-    const improvementsReduce = (points, improviment) => {
-        if (improviment.type === 'catricio_fan') return points * improviment.increment
+    const improvementsReduce = (points, improvement) => {
+        if (improvement.type === 'catricio_fan') return points * improvement.increment
 
-        if (improviment.type === 'pet_lover') return points + state.pets.length * improviment.increment
+        if (improvement.type === 'pet_lover') return points + state.pets.length * improvement.increment
 
         return points
     }
@@ -202,7 +202,7 @@ export const Game = (container, Utils = utility) => {
 
     const setStorage = () => {
         const gameState = {
-            improviments: state.improviments,
+            improvements: state.improvements,
             pets: state.pets.map((pet) => getPetToStorage(pet)),
             score: state.score
         }
@@ -216,14 +216,14 @@ export const Game = (container, Utils = utility) => {
         if (!storageState) return
 
         state.score = storageState.score
-        state.improviments = storageState.improviments
+        state.improvements = storageState.improvements
         storageState.pets.forEach((pet) => createPetFromStorage(pet))
     }
 
     const getPetToStorage = (pet) => {
-        const { name, type, improviments, score, width, height } = pet.getInfo()
+        const { name, type, improvements, score, width, height } = pet.getInfo()
 
-        return { name, type, improviments, score, width, height }
+        return { name, type, improvements, score, width, height }
     }
 
     const getPets = () => state.pets
@@ -239,7 +239,7 @@ export const Game = (container, Utils = utility) => {
         state.resetFullScreen = resetFullScreen
         state.toggleShop = toggleShop
         state.shopIsOpen = shopIsOpen
-        state.buyImproviment = buyImprovement
+        state.buyImprovement = buyImprovement
         state.dispachClick = dispatchClick
     }
 
@@ -282,16 +282,16 @@ export const Game = (container, Utils = utility) => {
 
     const createImprovementSprites = async () => {
         await Promise.all(
-            IMPROVEMENTS.filter((improviment) => improviment.spritPath).map((improviment) =>
-                createimprovimentSprite(improviment)
+            IMPROVEMENTS.filter((improvement) => improvement.spritPath).map((improvement) =>
+                createImprovementSprite(improvement)
             )
         )
     }
 
-    const createimprovimentSprite = async (improviment) => {
+    const createImprovementSprite = async (improvement) => {
         return await utils
-            .createSprite(improviment.spritPath)
-            .then((sprite) => (state.sprites.improviments[improviment.type] = sprite))
+            .createSprite(improvement.spritPath)
+            .then((sprite) => (state.sprites.improvements[improvement.type] = sprite))
     }
 
     const createCatricioSprites = async () => {

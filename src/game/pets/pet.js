@@ -19,7 +19,7 @@ export default class Pet {
         this.gameCanvasInstance = gameInstance.canvasState
         this.setInitialState(stateParams)
         this.createSprite()
-        this.state.improviments.forEach((improviment) => this.setBonusTimeout(improviment))
+        this.state.improvements.forEach((improvement) => this.setBonusTimeout(improvement))
     }
 
     utils = null
@@ -43,7 +43,7 @@ export default class Pet {
         speed: { x: 0, y: 0 },
         score: 0,
         spriteDirection: null,
-        improviments: []
+        improvements: []
     }
 
     setInitialState({
@@ -57,7 +57,7 @@ export default class Pet {
         spriteDirection,
         sprite,
         spritePath,
-        improviments,
+        improvements,
         score
     }) {
         Object.assign(this.state, {
@@ -74,7 +74,7 @@ export default class Pet {
             position: this.getPosition(position),
             spriteDirection: spriteDirection ?? null,
             spritePath,
-            improviments: improviments ?? [],
+            improvements: improvements ?? [],
             score: score ?? 0
         })
     }
@@ -183,7 +183,7 @@ export default class Pet {
     }
 
     hasBonus() {
-        return this.state.improviments.some(({ type }) => type === 'bonus')
+        return this.state.improvements.some(({ type }) => type === 'bonus')
     }
 
     getRandomColor() {
@@ -257,18 +257,18 @@ export default class Pet {
     }
 
     setSpecialBonus() {
-        const improviment = { time: 10000, increment: 10, type: 'bonus' }
+        const improvement = { time: 10000, increment: 10, type: 'bonus' }
 
-        this.state.improviments.push(improviment)
-        this.setBonusTimeout(improviment)
+        this.state.improvements.push(improvement)
+        this.setBonusTimeout(improvement)
     }
 
-    setBonusTimeout(improviment) {
-        setTimeout(() => this.state.improviments.shift(), improviment.time)
+    setBonusTimeout(improvement) {
+        setTimeout(() => this.state.improvements.shift(), improvement.time)
     }
 
     getBonusScoreIncrement() {
-        return this.state.improviments.reduce((acc, improviment) => acc * improviment.increment, 1)
+        return this.state.improvements.reduce((acc, improvement) => acc * improvement.increment, 1)
     }
 
     checkCollision() {

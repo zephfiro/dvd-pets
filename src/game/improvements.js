@@ -1,6 +1,6 @@
 const BASE_SPRITE_PATH = '/src/sprites/upgrades'
 
-export const IMPROVIMENTS = [
+export const IMPROVEMENTS = [
     {
         type: 'tomato_ball',
         target: 'catomato',
